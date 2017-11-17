@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 export default class Dropdown extends Component {
 
   componentDidMount(){
-    console.log("Buttons mounted!!", this.props.uxTag, this.props.renderData[0]);
     this.props.uxCallback(this.props.uxTag, this.props.renderData[0])
   }
 
@@ -13,7 +12,6 @@ export default class Dropdown extends Component {
     const { renderData, uxCallback, uxTag} = this.props
 
     function onSelectItem(e){
-      console.log("it worked!!!", e.target.options[e.target.selectedIndex].value);
       let i = e.target.options[e.target.selectedIndex].value;
 
       uxCallback(uxTag, renderData[i]);

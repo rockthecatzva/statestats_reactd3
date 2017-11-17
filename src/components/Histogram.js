@@ -6,7 +6,8 @@ import * as d3 from 'd3';
 export default class Histogram extends Component {
   constructor(props){
     super(props)
-    this.updateData = this.updateData.bind(this)
+    this.updateData = this.updateData.bind(this);
+    
   }
 
   updateData(data, highlight) {
@@ -96,6 +97,7 @@ export default class Histogram extends Component {
   componentDidMount() {
     var el = ReactDOM.findDOMNode(this);
     d3.select(el).append("svg");
+    console.log("histo mounted")
 
     if(this.props.renderData){
       this.updateData(this.props.renderData, this.props.highlightValue)

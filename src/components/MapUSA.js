@@ -9,6 +9,7 @@ export default class MapUSA extends Component {
   constructor(props){
     super(props)
     this.updateData = this.updateData.bind(this)
+    
   }
 
   updateData(data, highlight) {
@@ -19,6 +20,8 @@ export default class MapUSA extends Component {
         containerH = parseInt((window.getComputedStyle(el).height).replace("px", ""), 10),
         projection = d3.geoAlbersUsa().scale(containerW+40).translate([containerW / 2, containerH / 2]),
         path = d3.geoPath().projection(projection);
+
+        console.log(containerW, containerH)
 
     var svg = d3.select(ReactDOM.findDOMNode(this)).select("svg")
         .attr("width", containerW)
@@ -78,7 +81,7 @@ export default class MapUSA extends Component {
   }
 
   componentWillReceiveProps(nextprop) {
-      //console.log(nextprop.highlightStates)
+      console.log("getting props")
       if(nextprop.renderData){
         this.updateData(nextprop.renderData, nextprop.highlightStates)
       }
@@ -88,7 +91,7 @@ export default class MapUSA extends Component {
   componentDidMount() {
     var el = ReactDOM.findDOMNode(this)
     d3.select(el).append("svg")//add an empty svg
-
+    console.log("map mounted")
     if(this.props.renderData){
         this.updateData(this.props.renderData, this.props.highlightStates)
       }

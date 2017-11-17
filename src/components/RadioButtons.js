@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom'
 export default class RadioButtons extends Component {
 
   componentDidMount(){
-    console.log("Buttons mounted!!", this.props.uxTag, this.props.renderData[0]);
     this.props.uxCallback(this.props.uxTag, this.props.renderData[0])
   }
 

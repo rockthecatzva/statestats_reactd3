@@ -125,16 +125,7 @@ class App extends Component {
 
 
   render() {
-    const MapContainer = styled.div`
-      width: 70%;
-      height: 400px;
-      float: left;
-      @media (max-width: 800px) {
-        width: 100%;
-        margin: 0 auto;
-      }`,
-
-        HistContainer = styled.div`
+    const HistContainer = styled.div`
         width: 30%;
         height: 350px;
         float: left;
@@ -144,13 +135,11 @@ class App extends Component {
           margin: 0 auto;
         }`,
 
-        ScatterContainer = styled.div`
-          width: 80%;
-          height: 400px;
-          margin: 0 auto;
-        `
-          
-      ;
+          ScatterContainer = styled.div`
+            width: 80%;
+            height: 400px;
+            margin: 0 auto;
+          `;
 
 
     const key = "47498d7e18b87cc6d3ffcc3b61ad9f9f5d2be790",
@@ -186,11 +175,10 @@ class App extends Component {
 
       {this.state.apiData &&
         <div>
-          <MapContainer>
+          <div className="mapcontainer">
             <MapUSA renderData={this.state.apiData} uxCallback={this.onUxEvent} highlightStates={this.state.highlightStates} />
-          </MapContainer>
+          </div>
 
-          
           <HistContainer>
             <div className="histo-title"><p>Distribution of Values</p></div>
             <Histogram renderData={this.state.apiData} uxCallback={this.onUxEvent} highlightValue={this.state.highlightValue} />
@@ -217,7 +205,7 @@ class App extends Component {
       }
 
 
-      <div><p className="column">Source: American Community Survrey (ACS) 2015. Religousity data is by Pew Research <a href="http://www.pewresearch.org/fact-tank/2016/02/29/how-religious-is-your-state/?state=alabama">link</a></p></div>
+      <p className="column">Source: American Community Survrey (ACS) 2015. Religousity data is by Pew Research <a href="http://www.pewresearch.org/fact-tank/2016/02/29/how-religious-is-your-state/?state=alabama">link</a></p>
 
     </div>);
   }

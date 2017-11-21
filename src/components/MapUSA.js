@@ -75,7 +75,8 @@ export default class MapUSA extends Component {
         })
         .on("click", function(e){
           d3.event.stopPropagation();
-          callUx("map-click", e);
+          console.log(e)
+          callUx(e.name+": "+e.value+e.numformat);
         });
     });
   }

@@ -1,34 +1,30 @@
-import React, { Component} from 'react';
-import PropTypes from 'prop-types';
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 
 export default class Dropdown extends Component {
-
   componentDidMount(){
-    this.props.uxCallback(this.props.uxTag, this.props.renderData[0])
+    this.props.onChange(this.props.options[0].value);
   }
-
 
   render() {
-    const { renderData, uxCallback, uxTag} = this.props
-
-    function onSelectItem(e){
-      let i = e.target.options[e.target.selectedIndex].value;
-
-      uxCallback(uxTag, renderData[i]);
-    }
-
+    const { options, onChange, defaultSelection } = this.props
+    
     return (
-        <select className="dropdown" onChange={onSelectItem} >
-          {renderData.map((v,i)=>{
-            return(<option key={i} value={i}>{v["label"]}</option>)
-            })}
+      <span>
+        <select onChange={e => onChange(options[e.target.value].value)} value={defaultSelection}  >
+          {options.map((option,i) => (
+            <option value={i} key={i} >
+              {option.label}
+            </option>
+          ))}
         </select>
-      )
-    }
+      </span>
+    )
   }
-
-  Dropdown.propTypes = {
-    renderData: PropTypes.array.isRequired,
-    uxCallback: PropTypes.func.isRequired,
-    uxTag: PropTypes.string.isRequired
+}
+ 
+Dropdown.propTypes = {
+    options: PropTypes.array.isRequired,
+    onChange: PropTypes.func.isRequired,
+    defaultSelection: PropTypes.number.isRequired
   }

@@ -1,19 +1,19 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'; 
-import ReactDOM from 'react-dom';
-import * as d3 from 'd3';
-import * as topojson from 'topojson';
+import PropTypes from 'prop-types' 
+import ReactDOM from 'react-dom'
+import * as d3 from 'd3'
+import * as topojson from 'topojson'
+import styled from 'styled-components'
 
 
 export default class MapUSA extends Component {
   constructor(props){
-    super(props)
-    this.updateData = this.updateData.bind(this)
-    
+    super(props);
+    this.updateData = this.updateData.bind(this);
   }
 
   updateData(data, highlight) {
-    const {uxCallback} = this.props
+    const {uxCallback} = this.props;
 
     let el = ReactDOM.findDOMNode(this),
         containerW = parseInt((window.getComputedStyle(el).width).replace("px", ""), 10),
@@ -21,11 +21,11 @@ export default class MapUSA extends Component {
         projection = d3.geoAlbersUsa().scale(containerW+40).translate([containerW / 2, containerH / 2]),
         path = d3.geoPath().projection(projection);
 
-        console.log(containerW, containerH)
-
     var svg = d3.select(ReactDOM.findDOMNode(this)).select("svg")
         .attr("width", containerW)
         .attr("height", containerH);
+      
+    console.log(svg, containerW, containerH)
 
     d3.json("us.json", function(json) {
       var d = topojson.feature(json, json.objects.states)
@@ -46,10 +46,6 @@ export default class MapUSA extends Component {
       let median_val = d3.median(d.features, (d)=>{return d['value']});
       var color_scale = d3.scaleLinear().domain([min_val, median_val, max_val]).range(['blue', 'white', 'red']);
 
-      var callUx = function(tag, data){
-          uxCallback(tag, data)
-        }
-
       svg.selectAll("path").remove()
       svg.selectAll("path")
         .data(t)
@@ -60,10 +56,10 @@ export default class MapUSA extends Component {
           if(highlight.length){
             if(highlight.filter(r=>{if(r===d.state) return true; return false;}).length)
             {
-              return "mapstates highlight"
+              return "mapstates highlight";
             }
             else{
-              return "mapstates greyed-out"
+              return "mapstates greyed-out";
             }
           }
           return "mapstates";
@@ -76,13 +72,13 @@ export default class MapUSA extends Component {
         .on("click", function(e){
           d3.event.stopPropagation();
           console.log(e)
-          callUx(e.name+": "+e.value+e.numformat);
+          uxCallback(e.name+": "+e.value+e.numformat);
         });
     });
   }
 
   componentWillReceiveProps(nextprop) {
-      console.log("getting props")
+      //console.log("getting props")
       if(nextprop.renderData){
         this.updateData(nextprop.renderData, nextprop.highlightStates)
       }
@@ -90,9 +86,6 @@ export default class MapUSA extends Component {
 
 
   componentDidMount() {
-    var el = ReactDOM.findDOMNode(this)
-    d3.select(el).append("svg")//add an empty svg
-    console.log("map mounted")
     if(this.props.renderData){
         this.updateData(this.props.renderData, this.props.highlightStates)
       }
@@ -100,9 +93,19 @@ export default class MapUSA extends Component {
 
 
   render() {
+    const Map = styled.div`
+      width: 400px;
+      height: 400px;
+    `;
+
+    const SVG = styled.svg`
+      width: 400px;
+      height: 400px;
+    `;
+
     return (
-      <div className="fullw fullh">
-      </div>
+      <Map>
+      </Map>
     )
   }
 }

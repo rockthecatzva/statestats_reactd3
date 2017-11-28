@@ -10,7 +10,8 @@ import {
   //REQUEST_POSTS,
   //RECEIVE_POSTS,
   RECEIVE_CENSUSDATA,
-  USSTATE_CLICK
+  VIZ_CLICK,
+  CLEAR_SELECTIONS
 } from '../actions'
 
 /*
@@ -68,12 +69,14 @@ function postsBySubreddit(state = {}, action) {
 */
 
 
-function selectionLabels(state={"message": "Click on a graphic for more info"}, action){
+function selectionLabels(state={"message": "Click on a graphic for more info", "highlightStates": []}, action){
   switch(action.type){
     case RECEIVE_CENSUSDATA:
       return {...state};
-    case USSTATE_CLICK:
-      return {...state, ...{"message": action.message}};
+    case VIZ_CLICK:
+      return {...state, ...{"message": action.message, "highlightStates": action.highlightStates}};
+    case CLEAR_SELECTIONS:
+      return {...state, ...{"message": "Click on a graphic for more info", "highlightStates": []}}
     default:
       return state;
   }

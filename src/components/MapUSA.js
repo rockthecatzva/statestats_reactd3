@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import * as d3 from 'd3'
 import * as topojson from 'topojson'
 import styled from 'styled-components'
+import { debug } from 'util';
 //import { geoMercator, geoPath } from "d3-geo"
 //import { feature } from "topojson-client"
 
@@ -31,13 +32,15 @@ export default class MapUSA extends Component {
       })
   }
 
-  clickHandler(e){
-    d3.event.stopPropagation();
+  clickHandler(e, id){
+    e.stopPropagation();
+    this.props.uxCallback(id);
     console.log(e);
   }
 
   render() {
-    const { renderData, uxCallback } = this.props;
+    console.log("Map Rendering")
+    const { renderData, uxCallback, highlightStates } = this.props;
 
     const Map = styled.div`
       width: 800px;
@@ -49,6 +52,9 @@ export default class MapUSA extends Component {
       height: 400px;
     `;
 
+    const highlightColor = "#00ff00",
+          highlightGreyout = "#000000";
+
     let renderStates = []
 
     if (this.state.statePaths.features) {
@@ -59,13 +65,22 @@ export default class MapUSA extends Component {
           median_val = d3.median(renderData, (d) => { return d['value'] }),
           colorScale = d3.scaleLinear().domain([min_val, median_val, max_val]).range(['blue', 'white', 'red']);
 
+      
+
       renderStates = this.state.statePaths.features.map((d, i) => {
-        let colorVal = renderData.filter(st=>{if(st.id===d.id) return true;});
-        if(colorVal.length){
-          colorVal = colorScale(colorVal[0].value);
-          return (<path d={path(d)} key={i} stroke={"#000"} fill={colorVal} onClick={()=>{uxCallback(d.id)}} />);
+        let colorVal="#fff";
+
+        if(highlightStates.length>0){
+          //console.log("here is hihglightstates", highlightStates)
+          colorVal = highlightStates.filter(st=>{if(st===d.id) {return true} return false}).length>0 ? highlightColor:highlightGreyout ;
         }
-        return;
+        else{
+          colorVal = renderData.filter(st=>{if(st.id===d.id) return true;});
+          if(colorVal.length){
+            colorVal = colorScale(colorVal[0].value);
+          }
+        }
+        return (<path d={path(d)} key={i} stroke={"#000"} fill={colorVal} onClick={(e)=>{this.clickHandler(e, d.id)}} />);
       })
     }
 

@@ -1,12 +1,11 @@
 import { connect } from 'react-redux'
-//import { setVisibilityFilter } from '../actions'
-//import Link from '../components/Link'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 
 import {fetchCensusData,
-        clickUSState} from '../actions'
+        vizClick,
+        clearSelections} from '../actions'
 
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -19,25 +18,54 @@ class CensusApp extends Component {
   constructor(props) {
     super(props);
     this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.handleMapClick = this.handleMapClick.bind(this);
+    this.clearSelections = this.clearSelections.bind(this);
+  }
+
+  handleMapClick(id){
+    const {dispatch, censusData } = this.props;
+    //make the message - find state name, number format and value
+    const stateData = censusData.primaryData.filter(st=>{if(st.id===id) return true;})[0],
+          message = stateData.state+": "+stateData.value+stateData.numformat;
+    //dispatch with message & higlightState
+    dispatch(vizClick(message, [id]));
+  }
+
+  handleHistoClick(vals){
+    const {dispatch, censusData} = this.props;
+    
+    const max = Math.max(...vals),
+          min = Math.min(...vals),
+          numformat = censusData.primaryData[0].numformat,
+          message = (max===min) ? "States with "+min+numformat : "States with "+min+"-"+max+numformat,
+          statesInRange = censusData.primaryData.filter(st=>{
+            return vals.includes(st.value);
+          }).map(st=>{return st.id});
+          console.log(statesInRange, message);
+
+    dispatch(vizClick(message, statesInRange));
+  }
+
+  clearSelections(){
+    this.props.dispatch(clearSelections());
   }
 
 
   handleOptionChange(optiongroup, val){
-    //console.log(optiongroup, val)
     this.props.dispatch(fetchCensusData(optiongroup, val))
   }
 
   render() {
-    const {dataOptions, censusData, selectionLabels, dispatch} = this.props;
+    const {dataOptions, censusData, selectionLabels, dispatch, highlightStates} = this.props;
     return (
-      <div>
+      <div onClick={()=>{this.clearSelections()}}>
         <Header />
         <MessageModal message={selectionLabels.message} />
         <Dropdown options={dataOptions} onChange={(val)=>{this.handleOptionChange("primaryData", val)}} defaultSelection={0} />
         {censusData.hasOwnProperty("primaryData") && 
           <div>
-            <MapUSA renderData={censusData.primaryData} uxCallback={(id)=>{dispatch(clickUSState(id))}} highlightStates={[]} />
-            <Histogram renderData={censusData.primaryData} uxCallback={()=>{console.log("click event")}} highlightValue={[]} />
+            <MapUSA renderData={censusData.primaryData} uxCallback={(id)=>{this.handleMapClick(id)}} highlightStates={selectionLabels.highlightStates} />
+            <Histogram renderData={censusData.primaryData} uxCallback={(vals)=>{this.handleHistoClick(vals)}} highlightValue={null} />
           </div>
 
           }

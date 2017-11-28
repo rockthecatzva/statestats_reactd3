@@ -2,16 +2,25 @@ import fetch from 'isomorphic-fetch'
 
 export const REQUEST_CENSUSDATA = 'REQUEST_CENSUSDATA'
 export const RECEIVE_CENSUSDATA = 'RECEIVE_CENSUSDATA'
-export const USSTATE_CLICK = 'USSTATE_CLICK'
+export const VIZ_CLICK = 'VIZ_CLICK'
+export const CLEAR_SELECTIONS = 'CLEAR_SELECTIONS'
 
-export const clickUSState = message => {
-  console.log(message)
+export const vizClick = (message, highlightStates) => {
   return {
-    type: USSTATE_CLICK,
-    message
+    type: VIZ_CLICK,
+    message,
+    highlightStates: highlightStates
   }
 }
 
+export const clearSelections = ()=>{
+  return {
+    type: CLEAR_SELECTIONS
+  }
+}
+
+
+/*
 export const clickHistogramBar = valRange => {
   return {
     type: 'HISTOGRAM_CLICK',
@@ -25,7 +34,7 @@ export const clickScatterPlotPoint = stateId => {
     stateId
   }
 }
-
+*/
 
 //COPIED FROM REDUX-REDDIT-API EXAMPLE
 

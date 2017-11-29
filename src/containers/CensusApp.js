@@ -28,7 +28,7 @@ class CensusApp extends Component {
     const stateData = censusData.primaryData.filter(st=>{if(st.id===id) return true;})[0],
           message = stateData.state+": "+stateData.value+stateData.numformat;
     //dispatch with message & higlightState
-    dispatch(vizClick(message, [id]));
+    dispatch(vizClick(message, [id], [stateData.value]));
   }
 
   handleHistoClick(vals){
@@ -43,7 +43,7 @@ class CensusApp extends Component {
           }).map(st=>{return st.id});
           console.log(statesInRange, message);
 
-    dispatch(vizClick(message, statesInRange));
+    dispatch(vizClick(message, statesInRange, vals));
   }
 
   clearSelections(){
@@ -65,7 +65,7 @@ class CensusApp extends Component {
         {censusData.hasOwnProperty("primaryData") && 
           <div>
             <MapUSA renderData={censusData.primaryData} uxCallback={(id)=>{this.handleMapClick(id)}} highlightStates={selectionLabels.highlightStates} />
-            <Histogram renderData={censusData.primaryData} uxCallback={(vals)=>{this.handleHistoClick(vals)}} highlightValue={null} />
+            <Histogram renderData={censusData.primaryData} uxCallback={(vals)=>{this.handleHistoClick(vals)}} highlightValues={selectionLabels.highlightValues} />
           </div>
 
           }

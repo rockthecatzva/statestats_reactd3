@@ -41,15 +41,18 @@ export default class MapUSA extends Component {
   render() {
     console.log("Map Rendering")
     const { renderData, uxCallback, highlightStates } = this.props;
+    const width = 800,
+          height = 400;
 
     const Map = styled.div`
-      width: 800px;
-      height: 400px;
+      width: ${width+"px"};
+      height: ${height+"px"};
+      float: left;
     `;
 
     const SVG = styled.svg`
-      width: 800px;
-      height: 400px;
+      width: ${width+"px"};
+      height: ${height+"px"};
     `;
 
     const highlightColor = "#00ff00",

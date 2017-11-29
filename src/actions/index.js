@@ -5,11 +5,12 @@ export const RECEIVE_CENSUSDATA = 'RECEIVE_CENSUSDATA'
 export const VIZ_CLICK = 'VIZ_CLICK'
 export const CLEAR_SELECTIONS = 'CLEAR_SELECTIONS'
 
-export const vizClick = (message, highlightStates) => {
+export const vizClick = (message, highlightStates, highlightValues) => {
   return {
     type: VIZ_CLICK,
     message,
-    highlightStates: highlightStates
+    highlightStates,
+    highlightValues
   }
 }
 

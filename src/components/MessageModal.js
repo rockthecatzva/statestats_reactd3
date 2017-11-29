@@ -6,7 +6,7 @@ export default class MessageModal extends Component {
   render() {
       const {message} = this.props;
       const Modal = styled.div`
-        position: fixed;
+        
         width: 80%;
         height: 2em;
         text-align: center;

@@ -69,14 +69,14 @@ function postsBySubreddit(state = {}, action) {
 */
 
 
-function selectionLabels(state={"message": "Click on a graphic for more info", "highlightStates": []}, action){
+function selectionLabels(state={"message": "Click on a graphic for more info", "highlightStates": [], "highlightValues": []}, action){
   switch(action.type){
     case RECEIVE_CENSUSDATA:
       return {...state};
     case VIZ_CLICK:
-      return {...state, ...{"message": action.message, "highlightStates": action.highlightStates}};
+      return {...state, ...{"message": action.message, "highlightStates": action.highlightStates, "highlightValues": action.highlightValues}};
     case CLEAR_SELECTIONS:
-      return {...state, ...{"message": "Click on a graphic for more info", "highlightStates": []}}
+      return {...state, ...{"message": "Click on a graphic for more info", "highlightStates": [], "highlightValues": []}}
     default:
       return state;
   }

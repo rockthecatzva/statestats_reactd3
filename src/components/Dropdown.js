@@ -3,18 +3,20 @@ import PropTypes from 'prop-types'
 
 export default class Dropdown extends Component {
   componentDidMount(){
-    this.props.onChange(this.props.options[0].value);
+    const { optionSet, onChange, defaultSelection } = this.props
+
+    onChange(optionSet[defaultSelection].option);
   }
 
   render() {
-    const { options, onChange, defaultSelection } = this.props
+    const { optionSet, onChange, defaultSelection } = this.props
     
     return (
       <span>
-        <select onChange={e => onChange(options[e.target.value].value)} value={defaultSelection}  >
-          {options.map((option,i) => (
+        <select onChange={e => onChange(optionSet[e.target.value].option)} value={defaultSelection}  >
+          {optionSet.map((o,i) => (
             <option value={i} key={i} >
-              {option.label}
+              {o.option.label}
             </option>
           ))}
         </select>
@@ -24,7 +26,7 @@ export default class Dropdown extends Component {
 }
  
 Dropdown.propTypes = {
-    options: PropTypes.array.isRequired,
+    optionSet: PropTypes.array.isRequired,
     onChange: PropTypes.func.isRequired,
     defaultSelection: PropTypes.number.isRequired
   }

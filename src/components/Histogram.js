@@ -53,6 +53,12 @@ export default class Histogram extends Component {
       text-anchor: middle;
     `;
 
+    const Title = styled.p`
+      width: 100%;
+      font-size: 1.8em;
+      text-align: center;
+    `;
+
     const margin = { top: 20, right: 5, bottom: 20, left: 5 },
       labelMargin = 5,
       tickSize = 10,
@@ -115,6 +121,7 @@ export default class Histogram extends Component {
 
     return (
       <Histo>
+        <Title>Distribution of Values</Title>
         <SVG>
           {labels}
           {bars}

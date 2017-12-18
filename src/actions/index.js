@@ -4,6 +4,7 @@ export const REQUEST_CENSUSDATA = 'REQUEST_CENSUSDATA'
 export const RECEIVE_CENSUSDATA = 'RECEIVE_CENSUSDATA'
 export const VIZ_CLICK = 'VIZ_CLICK'
 export const CLEAR_SELECTIONS = 'CLEAR_SELECTIONS'
+export const CHANGE_DATALABEL = 'CHANGE_DATALABEL'
 
 export const vizClick = (message, highlightStates, highlightValues) => {
   return {
@@ -11,6 +12,14 @@ export const vizClick = (message, highlightStates, highlightValues) => {
     message,
     highlightStates,
     highlightValues
+  }
+}
+
+export const changeDropDown = (group, label) => {
+  return{
+    type: CHANGE_DATALABEL,
+    group,
+    label
   }
 }
 
@@ -35,15 +44,18 @@ export const clickScatterPlotPoint = stateId => {
     stateId
   }
 }
-*/
 
-//COPIED FROM REDUX-REDDIT-API EXAMPLE
 
 export const REQUEST_POSTS = 'REQUEST_POSTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT'
 export const INVALIDATE_SUBREDDIT = 'INVALIDATE_SUBREDDIT'
+*/
 
+//COPIED FROM REDUX-REDDIT-API EXAMPLE
+
+
+/*
 export function selectSubreddit(subreddit) {
   return {
     type: SELECT_SUBREDDIT,
@@ -83,7 +95,7 @@ function fetchPosts(subreddit) {
   }
 }
 
-
+*/
 
 function receiveData(group, data) {
   console.log(data)
@@ -109,6 +121,7 @@ function loadingError() {
 
 
 export function fetchCensusData(datagroup, apisettings) {
+  console.log(datagroup, apisettings)
   return (dispatch) => {
     return fetch(buildURL(apisettings))
       .then(response => response.json())
@@ -145,7 +158,7 @@ export function itemsFetchData(url) {
 
 
 
-
+//THIS
 function buildURL(settings) {
   let url = settings["url"];
 
@@ -157,7 +170,7 @@ function buildURL(settings) {
       }
     }
     else {
-      if (set !== "url" && set !== "processor") {
+      if (set !== "url" && set !== "processor" && set!=="label") {
         url += "&" + set + "=" + settings[set];
       }
     }
@@ -188,6 +201,7 @@ function csvtojson(csv) {
 }
 
 
+/*
 
 function shouldFetchPosts(state, subreddit) {
   const posts = state.postsBySubreddit[subreddit]
@@ -207,7 +221,7 @@ export function fetchPostsIfNeeded(subreddit) {
     }
   }
 }
-
+*/
 
 
 

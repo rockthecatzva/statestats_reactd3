@@ -1,6 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from 'react'
 import PropTypes from 'prop-types';
+import styled from 'styled-components'
 
 import * as d3 from 'd3';
 import {
@@ -14,35 +14,10 @@ import { extent as d3ArrayExtent } from 'd3-array';
 
 
 export default class ScatterPlotLine extends React.Component {
-    constructor(props) {
-        super(props)
-        this.updateData = this.updateData.bind(this);
-        this.state = { "height": 0, "width": 0 };
-
-    }
-
-    componentWillReceiveProps(nextprop) {
-        if ((nextprop.primaryData) && (nextprop.secondaryData)) {
-            this.updateData(nextprop.primaryData, nextprop.secondaryData)
-        }
-    }
-
-
-    componentDidMount() {
-        if (this.props.primaryData && this.props.secondaryData) {
-            this.updateData(this.props.primaryData, this.props.secondaryData)
-        }
-    }
-
-    updateData(primary, secondary) {
-        var el = ReactDOM.findDOMNode(this),
-            containerW = parseInt((window.getComputedStyle(el).width).replace("px", ""), 10),
-            containerH = parseInt((window.getComputedStyle(el).height).replace("px", ""), 10);
-
-        this.setState({ "width": containerW, "height": containerH });
-    }
-
     render() {
+        const {primaryData, secondaryData, primaryLabel, secondaryLabel, highlightStates, uxCallback} = this.props;
+
+
         const margin = {
             bottom: 35,
             top: 15,
@@ -51,18 +26,51 @@ export default class ScatterPlotLine extends React.Component {
         },
             buffer = 0.1,
             tickSize = 4,
-            radius = 3,
+            radius = 6,
             labelOffset = 30;
+
+        const width = 600,
+            height = 400;
+
+        const Scatter = styled.div`
+                width: ${width + "px"};
+                height: ${height + "px"};
+                margin: auto auto;
+              `;
+
+        const SVG = styled.svg`
+            width: ${width + "px"};
+            height: ${height + "px"};
+              `;
+
+        const LabelText = styled.text`
+              text-anchor: middle;
+            `;
+
+        const NormalBubble = styled.circle`
+            stroke: rgb(0,0,0);
+            fill: rgb(255,255,255);
+        `;
+
+        const HighlightBubble = styled.circle`
+            stroke: rgb(0,0,0);
+            fill: rgb(0,255,255);
+        `;
+
+        const GrayBubble = styled.circle`
+            stroke: rgb(192,192,192);
+            fill: rgb(192,192,192);
+        `;
 
         var circles = [];
 
-        if (this.state.height && this.props.secondaryData) {
-            var xrange = d3ArrayExtent(this.props.primaryData, r => r.value),
-                yrange = d3ArrayExtent(this.props.secondaryData, r => r.value);
+        if (primaryData && secondaryData) {
+            var xrange = d3ArrayExtent(primaryData, r => r.value),
+                yrange = d3ArrayExtent(secondaryData, r => r.value);
 
             var xScale = d3ScaleLinear()
                 .domain([xrange[0] - (xrange[0] * buffer), xrange[1] + (xrange[1] * buffer)])
-                .range([margin.left, this.state.width - margin.right]);
+                .range([margin.left, width - margin.right]);
 
             var xAxis = d3AxisBottom()
                 .scale(xScale)
@@ -71,7 +79,7 @@ export default class ScatterPlotLine extends React.Component {
 
             var yScale = d3ScaleLinear()
                 .domain([yrange[0] - (yrange[0] * buffer), yrange[1] + (yrange[1] * buffer)])
-                .range([this.state.height - margin.bottom, margin.top]);
+                .range([height - margin.bottom, margin.top]);
 
             var yAxis = d3AxisLeft()
                 .scale(yScale)
@@ -79,59 +87,60 @@ export default class ScatterPlotLine extends React.Component {
                 .tickFormat(d3.format(".2"));
 
             var axisTitles = [];
-            axisTitles.push(<text className="axis-title" key={axisTitles.length} transform={"translate("+((this.state.width - margin.right)/2)+","+(this.state.height - margin.bottom + labelOffset)+")"}>{this.props.primaryLabel}</text>);
-            axisTitles.push(<text className="axis-title" key={axisTitles.length} transform={"translate("+(margin.left-labelOffset)+","+((this.state.height - margin.bottom)/2)+")rotate(-90)"}>{this.props.secondaryLabel}</text>);
-            var par = this;
+            axisTitles.push(<LabelText className="axis-title" key={axisTitles.length} transform={"translate(" + ((width / 2)) + "," + (height - margin.bottom + labelOffset) + ")"}>{primaryLabel}</LabelText>);
+            axisTitles.push(<LabelText className="axis-title" key={axisTitles.length} transform={"translate(" + (margin.left - labelOffset) + "," + ((height - margin.bottom) / 2) + ")rotate(-90)"}>{secondaryLabel}</LabelText>);
+            //var par = this;
 
-            circles = this.props.primaryData.map(function (c, i) {
-                var pairVal = par.props.secondaryData.filter(d => d.state === c.state);
+            circles = primaryData.map(function (c, i) {
+                var pairVal = secondaryData.filter(d => d.state === c.state);
                 if (pairVal.length) {
                     var x = xScale(c.value),
-                        y = yScale(pairVal[0].value),
-                        cname = "bubble";
-                        if(par.props.highlightStates){
-                            cname += (par.props.highlightStates.filter(r=>{if(r===c.state) return true; return false;}).length) ? " highlight": " greyed-bubble";
-                        }
-                    var uxdat =  {
-                        selectedState: c.state,
-                        mapMessage: c.state+" "+par.props.primaryLabel+": "+c.value+par.props.primaryData[0].numformat+", "+par.props.secondaryLabel+": "+pairVal[0].value+par.props.secondaryData[0].numformat
-                    };
-                    var uxevent = (e)=>{
+                        y = yScale(pairVal[0].value);
+
+                    //arrow function here might use more memory than necessary?
+                    const uxevent = (e) => {
                         e.stopPropagation();
-                        par.props.uxCallback("scatter-click",uxdat);
+                        const message = c.state + " " + primaryLabel + ": " + c.value + primaryData[0].numformat + ", " + secondaryLabel + ": " + pairVal[0].value + secondaryData[0].numformat
+                        uxCallback([c.id], message);
                     }
 
-                    return (<circle key={i} cx={x} cy={y} r={radius} className={cname} onClick={uxevent} ></circle>);
+                    //console.log(highlightStates);
+
+                    if (highlightStates.length) {
+                        if (highlightStates.filter(r => {
+                            console.log(r, c.id)
+                            if (r === c.id) return true;
+                            return false;
+                        }).length) {
+                            return (<HighlightBubble key={i} cx={x} cy={y} r={radius} onClick={uxevent} ></HighlightBubble>);
+                        }
+                        else{
+                            return (<GrayBubble key={i} cx={x} cy={y} r={radius} onClick={uxevent} ></GrayBubble>);
+                        }
+
+                    }
+                    else{
+                        return (<NormalBubble key={i} cx={x} cy={y} r={radius} onClick={uxevent} ></NormalBubble>);
+                    }
+
+                    
                 }
-                
+
                 return [];
             });
-
-            /*var onMouse = function (e, d) {
-                d3.selectAll(".bubble").attr("class", "bubble");
-                d3.select(e.target).attr("class", "bubble highlight")
-                var left = e.pageX - document.getElementById('tooltip').clientWidth / 2,
-                    top = e.pageY - document.getElementById('tooltip').clientHeight + 100,
-                    score = Math.round(d.ups / 1000) + "k";
-                par.props.toolTip(d.date, score, d.title, d.url, top, left);
-            }*/
-
         }
 
 
-        
-        return (<div className="fullw fullh" >
-            {(this.state.height && this.state.width) &&
-                <svg height={this.state.height} width={this.state.width} >
-                    <g className="xAxis" transform={"translate(0," + (this.state.height - margin.bottom) + ")"} ref={node => d3.select(node).call(xAxis)} />
+
+        return (
+            <Scatter>
+                <SVG>
+                    <g className="xAxis" transform={"translate(0," + (height - margin.bottom) + ")"} ref={node => d3.select(node).call(xAxis)} />
                     <g className="yAxis" transform={"translate(" + margin.left + ",0)"} ref={node => d3.select(node).call(yAxis)} />
                     {axisTitles}
                     {circles}
-                </svg>
-            }
-
-        </div>
-        );
+                </SVG>
+            </Scatter>);
     }
 }
 

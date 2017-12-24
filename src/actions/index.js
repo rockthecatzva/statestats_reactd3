@@ -6,12 +6,11 @@ export const VIZ_CLICK = 'VIZ_CLICK'
 export const CLEAR_SELECTIONS = 'CLEAR_SELECTIONS'
 export const CHANGE_DATALABEL = 'CHANGE_DATALABEL'
 
-export const vizClick = (message, highlightStates, highlightValues) => {
+export const vizClick = (message, highlightStates) => {
   return {
     type: VIZ_CLICK,
     message,
-    highlightStates,
-    highlightValues
+    highlightStates
   }
 }
 
@@ -30,87 +29,14 @@ export const clearSelections = ()=>{
 }
 
 
-/*
-export const clickHistogramBar = valRange => {
-  return {
-    type: 'HISTOGRAM_CLICK',
-    valRange
-  }
-}
-
-export const clickScatterPlotPoint = stateId => {
-  return {
-    type: 'SCATTER_CLICK',
-    stateId
-  }
-}
-
-
-export const REQUEST_POSTS = 'REQUEST_POSTS'
-export const RECEIVE_POSTS = 'RECEIVE_POSTS'
-export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT'
-export const INVALIDATE_SUBREDDIT = 'INVALIDATE_SUBREDDIT'
-*/
-
-//COPIED FROM REDUX-REDDIT-API EXAMPLE
-
-
-/*
-export function selectSubreddit(subreddit) {
-  return {
-    type: SELECT_SUBREDDIT,
-    subreddit
-  }
-}
-
-export function invalidateSubreddit(subreddit) {
-  return {
-    type: INVALIDATE_SUBREDDIT,
-    subreddit
-  }
-}
-
-function requestPosts(subreddit) {
-  return {
-    type: REQUEST_POSTS,
-    subreddit
-  }
-}
-
-function receivePosts(subreddit, json) {
-  return {
-    type: RECEIVE_POSTS,
-    subreddit,
-    posts: json.data.children.map(child => child.data),
-    receivedAt: Date.now()
-  }
-}
-
-function fetchPosts(subreddit) {
-  return dispatch => {
-    dispatch(requestPosts(subreddit))
-    return fetch(`https://www.reddit.com/r/${subreddit}.json`)
-      .then(response => response.json())
-      .then(json => dispatch(receivePosts(subreddit, json)))
-  }
-}
-
-*/
-
 function receiveData(group, data) {
   console.log(data)
   return {
     type: RECEIVE_CENSUSDATA,
     group,
-    data,
-    //posts: json.data.children.map(child => child.data)
+    data
   }
 }
-
-
-
-
-
 
 
 function loadingError() {
@@ -130,30 +56,6 @@ export function fetchCensusData(datagroup, apisettings) {
         return dispatch(receiveData(datagroup, data))})
   }
 }
-
-
-/*
-export function itemsFetchData(url) {
-    return (dispatch) => {
-        dispatch(itemsIsLoading(true));
-
-        fetch(url)
-            .then((response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                }
-
-                dispatch(itemsIsLoading(false));
-
-                return response;
-            })
-            .then((response) => response.json())
-            .then((items) => dispatch(itemsFetchDataSuccess(items)))
-            .catch(() => dispatch(itemsHasErrored(true)));
-    };
-}
-*/
-
 
 
 
@@ -199,31 +101,3 @@ function csvtojson(csv) {
 
   return finalset
 }
-
-
-/*
-
-function shouldFetchPosts(state, subreddit) {
-  const posts = state.postsBySubreddit[subreddit]
-  if (!posts) {
-    return true
-  } else if (posts.isFetching) {
-    return false
-  } else {
-    return posts.didInvalidate
-  }
-}
-
-export function fetchPostsIfNeeded(subreddit) {
-  return (dispatch, getState) => {
-    if (shouldFetchPosts(getState(), subreddit)) {
-      return dispatch(fetchPosts(subreddit))
-    }
-  }
-}
-*/
-
-
-
-
-

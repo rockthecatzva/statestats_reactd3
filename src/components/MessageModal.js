@@ -6,15 +6,15 @@ export default class MessageModal extends Component {
   render() {
       const {message} = this.props;
       const Modal = styled.div`
-        
+        position: relative;
         width: 80%;
         height: 2em;
         text-align: center;
-        font-size: 2em;
-        bottom: 10%;
-        margin: 0 auto;
-        background-color: white;
-        border: solid 1px black;
+        font-size: 1.8em;
+        
+        margin: auto auto;
+        color: #fff;
+        background-color: #d299fd;
         border-radius: 5px;
       `;
 

@@ -6,6 +6,7 @@ export default class Dropdown extends Component {
     const { optionSet, onChange, defaultSelection } = this.props
 
     onChange(optionSet[defaultSelection].option);
+    console.log("Drop down MOUNTED!!!!");
   }
 
   render() {
@@ -13,7 +14,7 @@ export default class Dropdown extends Component {
     
     return (
       <span>
-        <select onChange={e => onChange(optionSet[e.target.value].option)} value={defaultSelection}  >
+        <select onChange={e => {onChange(optionSet[e.target.value].option)}} value={defaultSelection}  >
           {optionSet.map((o,i) => (
             <option value={i} key={i} >
               {o.option.label}

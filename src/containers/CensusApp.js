@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, {injectGlobal} from 'styled-components'
+
 
 import {
   fetchCensusData,
@@ -22,46 +23,11 @@ class CensusApp extends Component {
   constructor(props) {
     super(props);
     this.handleOptionChange = this.handleOptionChange.bind(this);
-    this.handleMapClick = this.handleMapClick.bind(this);
     this.clearSelections = this.clearSelections.bind(this);
   }
 
-
-  //NEED TO STANDARDIZE THE Click-EVent handlers ie, (stateSet, message)!!!!
-
-  handleScatterClick(idSet, message) {
-    const { dispatch, censusData } = this.props;
-    //make the message - find state name, number format and value
-    //const stateData = censusData.primaryData.filter(st => { if (st.id === id) return true; })[0],
-      //message = stateData.state + ": " + stateData.value + stateData.numformat;
-      //message = "SCATTER CLICK TEMP";
-    //dispatch with message & higlightState
-    dispatch(vizClick(message, idSet, [0]));
-  }
-
-
-  handleMapClick(id) {
-    const { dispatch, censusData } = this.props;
-    //make the message - find state name, number format and value
-    const stateData = censusData.primaryData.filter(st => { if (st.id === id) return true; })[0],
-      message = stateData.state + ": " + stateData.value + stateData.numformat;
-    //dispatch with message & higlightState
-    dispatch(vizClick(message, [id], [stateData.value]));
-  }
-
-  handleHistoClick(vals) {
-    const { dispatch, censusData } = this.props;
-
-    const max = Math.max(...vals),
-      min = Math.min(...vals),
-      numformat = censusData.primaryData[0].numformat,
-      message = (max === min) ? "States with " + min + numformat : "States with " + min + "-" + max + numformat,
-      statesInRange = censusData.primaryData.filter(st => {
-        return vals.includes(st.value);
-      }).map(st => { return st.id });
-    console.log(statesInRange, message);
-
-    dispatch(vizClick(message, statesInRange, vals));
+  handleInteraction(message, idSet) {
+    this.props.dispatch(vizClick(message, idSet));
   }
 
   clearSelections() {
@@ -79,26 +45,45 @@ class CensusApp extends Component {
     const { dataOptions, censusData, selectionLabels, dispatch, highlightStates } = this.props;
 
     //a styled-div with dropdown inside caused
+    
+
+    injectGlobal`
+    @font-face {
+      font-family: 'aileron';
+      src: url('/Aileron-Regular.otf');
+    }`;
+
     const ClearFloatHack = styled.div`
       clear: left;
     `;
+    
+    //Styled-components - causes continuous-remounting of components that have state or use componentDidMount, 
+      //so Histogram is fine when nested in a styled component, however dropdown (keeps initiating onChange) and Map (flickers due to total reload) have issues!
+
+    let highlightValues = [];
+    if(censusData.hasOwnProperty("primaryData")){
+      highlightValues = censusData.primaryData.filter(st=>selectionLabels.highlightStates.indexOf(st.id)>-1).map(st=>st.value);  
+      console.log(highlightValues);
+    }
+    
+    
 
     return (
-      <div onClick={() => { this.clearSelections() }}>
+      <div onClick={() => { this.clearSelections() }} >
         <Header />
         <Dropdown optionSet={dataOptions} onChange={(val) => { this.handleOptionChange("primaryData", val) }} defaultSelection={0} />
         {censusData.hasOwnProperty("primaryData") &&
           <div>
-            <MapUSA renderData={censusData.primaryData} uxCallback={(id) => { this.handleMapClick(id) }} highlightStates={selectionLabels.highlightStates} />
-            <Histogram renderData={censusData.primaryData} uxCallback={(vals) => { this.handleHistoClick(vals) }} highlightValues={selectionLabels.highlightValues} />
+            <MapUSA renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightStates={selectionLabels.highlightStates} />
+            <Histogram renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightValues={highlightValues} />
           </div>
         }
 
         <ClearFloatHack />
 
         <div>
-          {selectionLabels.primaryData} vs.
-          <Dropdown optionSet={dataOptions} onChange={(val) => { this.handleOptionChange("secondaryData", val) }} defaultSelection={dataOptions.length - 1} />
+          <p>Select a secondary variable for the scatter plot below</p>
+          <p>{selectionLabels.primaryData} vs. <Dropdown optionSet={dataOptions} onChange={(val) => { this.handleOptionChange("secondaryData", val) }} defaultSelection={dataOptions.length - 1} /></p>
         </div>
 
         {censusData.hasOwnProperty("secondaryData") &&
@@ -110,7 +95,7 @@ class CensusApp extends Component {
               primaryLabel={selectionLabels.primaryData}
               secondaryLabel={selectionLabels.secondaryData}
               highlightStates={selectionLabels.highlightStates}
-              uxCallback={(ids, msg) => { this.handleScatterClick(ids, msg) }} />
+              uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} />
           </div>
         }
 

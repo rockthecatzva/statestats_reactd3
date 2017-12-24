@@ -32,63 +32,71 @@ export default class MapUSA extends Component {
       })
   }
 
-  clickHandler(e, id){
+  clickHandler(e, stateInfo) {
+    console.log(stateInfo);
     e.stopPropagation();
-    this.props.uxCallback(id);
-    console.log(e);
+    const message = stateInfo.state + ": " + stateInfo.value + stateInfo.numformat;
+
+    this.props.uxCallback(message, [stateInfo.id]);
+
   }
 
   render() {
     console.log("Map Rendering")
     const { renderData, uxCallback, highlightStates } = this.props;
     const width = 800,
-          height = 400;
+      height = 500;
 
     const Map = styled.div`
-      width: ${width+"px"};
-      height: ${height+"px"};
-      float: left;
-    `;
+      width: ${width + "px"};
+      height: ${height + "px"};
+      float: left;`;
 
     const SVG = styled.svg`
-      width: ${width+"px"};
-      height: ${height+"px"};
-    `;
+      width: ${width + "px"};
+      height: ${height + "px"};`;
 
-    const highlightColor = "#00ff00",
-          highlightGreyout = "#000000";
+    const Title = styled.span`
+      width: 100%;
+      font-size: 1.1em;
+      text-align: center;
+      float: left;`;
+
+    const highlightColor = "#d299fd",
+      highlightGreyout = "#c5c5c5";
 
     let renderStates = []
 
     if (this.state.statePaths.features) {
       let projection = d3.geoAlbersUsa().scale(800).translate([400, 200]),
-          path = d3.geoPath().projection(projection),
-          max_val = d3.max(renderData, (d) => { return d['value'] }),
-          min_val = d3.min(renderData, (d) => { return d['value'] }),
-          median_val = d3.median(renderData, (d) => { return d['value'] }),
-          colorScale = d3.scaleLinear().domain([min_val, median_val, max_val]).range(['blue', 'white', 'red']);
+        path = d3.geoPath().projection(projection),
+        max_val = d3.max(renderData, (d) => { return d['value'] }),
+        min_val = d3.min(renderData, (d) => { return d['value'] }),
+        median_val = d3.median(renderData, (d) => { return d['value'] }),
+        colorScale = d3.scaleLinear().domain([min_val, median_val, max_val]).range(['blue', 'white', 'red']);
 
-      
+
 
       renderStates = this.state.statePaths.features.map((d, i) => {
-        let colorVal="#fff";
+        let colorVal = "#fff";
+        const stateInfo = renderData.filter(st => { if (st.id === d.id) return true; });
 
-        if(highlightStates.length>0){
-          //console.log("here is hihglightstates", highlightStates)
-          colorVal = highlightStates.filter(st=>{if(st===d.id) {return true} return false}).length>0 ? highlightColor:highlightGreyout ;
+        if (highlightStates.length > 0) {
+          colorVal = highlightStates.filter(st => { if (st === d.id) { return true } return false }).length > 0 ? highlightColor : highlightGreyout;
         }
-        else{
-          colorVal = renderData.filter(st=>{if(st.id===d.id) return true;});
-          if(colorVal.length){
-            colorVal = colorScale(colorVal[0].value);
+        else {
+          if (stateInfo.length){
+            colorVal = colorScale(stateInfo[0].value);
           }
+          
         }
-        return (<path d={path(d)} key={i} stroke={"#000"} fill={colorVal} onClick={(e)=>{this.clickHandler(e, d.id)}} />);
+        return (<path d={path(d)} key={i} stroke={"#fff"} fill={colorVal} onClick={(e) => { this.clickHandler(e, stateInfo[0]) }} />);
       })
     }
 
     return (
       <Map>
+        <Title>U.S. State Map</Title>
         <SVG>
           {renderStates}
         </SVG>

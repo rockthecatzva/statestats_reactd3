@@ -53,13 +53,14 @@ export default class ScatterPlotLine extends React.Component {
         `;
 
         const HighlightBubble = styled.circle`
-            stroke: rgb(0,0,0);
-            fill: rgb(0,255,255);
+            
+            fill: #d299fd;
         `;
 
         const GrayBubble = styled.circle`
             stroke: rgb(192,192,192);
-            fill: rgb(192,192,192);
+            stroke-width: 2;
+            fill: #c5c5c5;
         `;
 
         var circles = [];
@@ -101,14 +102,14 @@ export default class ScatterPlotLine extends React.Component {
                     const uxevent = (e) => {
                         e.stopPropagation();
                         const message = c.state + " " + primaryLabel + ": " + c.value + primaryData[0].numformat + ", " + secondaryLabel + ": " + pairVal[0].value + secondaryData[0].numformat
-                        uxCallback([c.id], message);
+                        uxCallback(message, [c.id]);
                     }
 
                     //console.log(highlightStates);
 
                     if (highlightStates.length) {
                         if (highlightStates.filter(r => {
-                            console.log(r, c.id)
+                            //console.log(r, c.id)
                             if (r === c.id) return true;
                             return false;
                         }).length) {

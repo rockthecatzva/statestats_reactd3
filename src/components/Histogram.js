@@ -17,8 +17,22 @@ export default class Histogram extends Component {
       return false;
     }).map(n => { return parseInt(n[1], 10); });
 
-    this.props.uxCallback(highNums);
-    //console.log(highNums);
+
+
+    const max = Math.max(...highNums),
+    min = Math.min(...highNums),
+    numformat = this.props.renderData[0].numformat,
+    message = (max === min) ? "States with " + min + numformat : "States with " + min + "-" + max + numformat,
+    statesInRange = this.props.renderData.filter(st => {
+      return highNums.includes(st.value);
+    }).map(st => { return st.id });
+
+
+
+
+    //this.props.uxCallback(highNums);
+    this.props.uxCallback(message, statesInRange);
+    console.log(message, statesInRange);
   }
 
   render() {
@@ -29,6 +43,7 @@ export default class Histogram extends Component {
       numBins = 10;
 
     const Histo = styled.div`
+          font-family: 'aileron';
           width: ${width + "px"};
           height: ${height + "px"};
           float: left;
@@ -46,17 +61,18 @@ export default class Histogram extends Component {
 
     const RectHighlight = styled.rect`
       stroke: #000;
-      fill: #f0f;
+      fill: #d299fd;
     `;
 
     const LabelText = styled.text`
       text-anchor: middle;
     `;
 
-    const Title = styled.p`
+    const Title = styled.span`
       width: 100%;
-      font-size: 1.8em;
+      font-size: 1.1em;
       text-align: center;
+      float: left;
     `;
 
     const margin = { top: 20, right: 5, bottom: 20, left: 5 },

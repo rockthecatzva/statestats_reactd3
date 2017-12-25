@@ -13,7 +13,7 @@ import {
 import { extent as d3ArrayExtent } from 'd3-array';
 
 
-export default class ScatterPlotLine extends React.Component {
+export default class ScatterPlotLine extends Component {
     render() {
         const {primaryData, secondaryData, primaryLabel, secondaryLabel, highlightStates, uxCallback} = this.props;
 

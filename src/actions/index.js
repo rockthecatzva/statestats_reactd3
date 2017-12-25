@@ -14,11 +14,11 @@ export const vizClick = (message, highlightStates) => {
   }
 }
 
-export const changeDropDown = (group, label) => {
+export const changeDropDown = (group, option) => {
   return{
     type: CHANGE_DATALABEL,
     group,
-    label
+    option
   }
 }
 
@@ -30,18 +30,11 @@ export const clearSelections = ()=>{
 
 
 function receiveData(group, data) {
-  console.log(data)
+  //console.log(data)
   return {
     type: RECEIVE_CENSUSDATA,
     group,
     data
-  }
-}
-
-
-function loadingError() {
-  return {
-    type: 'LOADING_ERROR'
   }
 }
 

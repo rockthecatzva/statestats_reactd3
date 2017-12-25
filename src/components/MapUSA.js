@@ -1,13 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ReactDOM from 'react-dom'
 import * as d3 from 'd3'
 import * as topojson from 'topojson'
 import styled from 'styled-components'
-import { debug } from 'util';
-//import { geoMercator, geoPath } from "d3-geo"
-//import { feature } from "topojson-client"
-
 
 export default class MapUSA extends Component {
   constructor(props) {
@@ -43,11 +38,13 @@ export default class MapUSA extends Component {
 
   render() {
     console.log("Map Rendering")
-    const { renderData, uxCallback, highlightStates } = this.props;
+    const { renderData, highlightStates } = this.props;
     const width = 800,
       height = 500;
 
     const Map = styled.div`
+    font-family: CustomFont;
+      color: red;
       width: ${width + "px"};
       height: ${height + "px"};
       float: left;`;
@@ -79,7 +76,7 @@ export default class MapUSA extends Component {
 
       renderStates = this.state.statePaths.features.map((d, i) => {
         let colorVal = "#fff";
-        const stateInfo = renderData.filter(st => { if (st.id === d.id) return true; });
+        const stateInfo = renderData.filter(st => { if (st.id === d.id) return true; return false;});
 
         if (highlightStates.length > 0) {
           colorVal = highlightStates.filter(st => { if (st === d.id) { return true } return false }).length > 0 ? highlightColor : highlightGreyout;

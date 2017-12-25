@@ -4,16 +4,14 @@ import styled from 'styled-components'
 
 export default class MessageModal extends Component {
   render() {
-      const {message} = this.props;
+      const {message, interactionHandler, showButton} = this.props;
       const Modal = styled.div`
-        position: relative;
-        width: 80%;
-        height: 2em;
-        text-align: center;
-        font-size: 1.8em;
+        position: fixed;
+        bottom: 4px;
         
+        padding: 5px;
+        padding-bottom: 10px;
         margin: auto auto;
-        color: #fff;
         background-color: #d299fd;
         border-radius: 5px;
       `;
@@ -25,10 +23,23 @@ export default class MessageModal extends Component {
         font-size: 1em;
     `;
 
+    const Deselect = styled.span`
+      padding: 4px;
+      color: black;
+      background-color: white;
+      border: solid 1px #000;
+      border-radius: 3px;  
+      font-size: 0.9em;
+      position: relative;
+      `;
+
     return (
       <Modal>
           <CloseX>x</CloseX>
           <p>{message}</p>
+          {showButton && 
+          <a href="#" onClick={()=>{interactionHandler()}} ><Deselect>Deselect</Deselect></a>
+          }
       </Modal>
     )
   }
@@ -36,4 +47,6 @@ export default class MessageModal extends Component {
  
 MessageModal.propTypes = {
     message: PropTypes.string.isRequired,
+    interactionHandler: PropTypes.func.isRequired,
+    showButton: PropTypes.bool.isRequired
   }

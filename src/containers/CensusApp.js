@@ -1,8 +1,7 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import styled, {injectGlobal} from 'styled-components'
-
+import styled, { injectGlobal } from 'styled-components'
+import CustomFont from '../fonts/GothamNarrow-Book.otf'
 
 import {
   fetchCensusData,
@@ -19,11 +18,32 @@ import Histogram from '../components/Histogram'
 import ScatterPlotLine from '../components/ScatterPlotLine'
 import MessageModal from '../components/MessageModal'
 
+
 class CensusApp extends Component {
   constructor(props) {
     super(props);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.clearSelections = this.clearSelections.bind(this);
+    const key = "47498d7e18b87cc6d3ffcc3b61ad9f9f5d2be790",
+      standardAPIObj = {
+        "url": "https://api.census.gov/data/2015/acs1/profile?",
+        "for": "state:*",
+        "key": key,
+      };
+
+    this.dropDownOptions = [
+      { "label": "High School Only Education", "data": { ...standardAPIObj, "get": "NAME,DP02_0061E,DP02_0058E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP02_0061E"], 10) / parseInt(v["DP02_0058E"], 10)) * 100), "numformat": "%" } } } },
+      { "label": "Bachelors Education", "data": { ...standardAPIObj, "get": "NAME,DP02_0064E,DP02_0058E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP02_0064E"], 10) / parseInt(v["DP02_0058E"], 10)) * 100), "numformat": "%" } } } },
+      { "label": "Unmarried Births (per 1k)", "data": { ...standardAPIObj, "get": "NAME,DP02_0038E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseInt(v["DP02_0038E"], 10), "numformat": "(per 1k)" } } } },
+      { "label": "White", "data": { ...standardAPIObj, "get": "NAME,DP05_0032E,DP05_0028E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP05_0032E"], 10) / parseInt(v["DP05_0028E"], 10)) * 100), "numformat": "%" } } } },
+      { "label": "Black", "data": { ...standardAPIObj, "get": "NAME,DP05_0033E,DP05_0028E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP05_0033E"], 10) / parseInt(v["DP05_0028E"], 10)) * 100), "numformat": "%" } } } },
+      { "label": "Hispanic", "data": { ...standardAPIObj, "get": "NAME,DP05_0066E,DP05_0065E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP05_0066E"], 10) / parseInt(v["DP05_0065E"], 10)) * 100), "numformat": "%" } } } },
+      { "label": "No Health Insurance", "data": { ...standardAPIObj, "get": "NAME,DP03_0099E,DP03_0095E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP03_0099E"], 10) / parseInt(v["DP03_0095E"], 10)) * 100), "numformat": "%" } } } },
+      { "label": "Median Age", "data": { ...standardAPIObj, "get": "NAME,DP05_0017E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseInt(v["DP05_0017E"], 10), "numformat": " years" } } } },
+      { "label": "Median HH Income", "data": { ...standardAPIObj, "get": "NAME,DP03_0062E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.trunc(parseInt(v["DP03_0062E"], 10) / 1000), "numformat": "k" } } } }
+    ];
+    this.handleOptionChange("primaryData", 0)
+    this.handleOptionChange("secondaryData", this.dropDownOptions.length - 1)
   }
 
   handleInteraction(message, idSet) {
@@ -34,57 +54,65 @@ class CensusApp extends Component {
     this.props.dispatch(clearSelections());
   }
 
-
-  handleOptionChange(optiongroup, val) {
-    console.log(optiongroup, val)
-    this.props.dispatch(fetchCensusData(optiongroup, val))
-    this.props.dispatch(changeDropDown(optiongroup, val.label))
+  handleOptionChange(optiongroup, selectedItemNumber) {
+    console.log(optiongroup, selectedItemNumber, this.dropDownOptions[selectedItemNumber])
+    this.props.dispatch(fetchCensusData(optiongroup, this.dropDownOptions[selectedItemNumber].data))
+    this.props.dispatch(changeDropDown(optiongroup, { "itemNumber": selectedItemNumber, "label": this.dropDownOptions[selectedItemNumber].label }))
   }
 
+
   render() {
-    const { dataOptions, censusData, selectionLabels, dispatch, highlightStates } = this.props;
+    const { censusData, selectionLabels } = this.props;
 
     //a styled-div with dropdown inside caused
-    
+
 
     injectGlobal`
     @font-face {
-      font-family: 'aileron';
-      src: url('/Aileron-Regular.otf');
+      font-family: CustomFont;
+      src: url('${CustomFont}') format('opentype');
     }`;
 
     const ClearFloatHack = styled.div`
       clear: left;
     `;
-    
+
     //Styled-components - causes continuous-remounting of components that have state or use componentDidMount, 
-      //so Histogram is fine when nested in a styled component, however dropdown (keeps initiating onChange) and Map (flickers due to total reload) have issues!
+    //so Histogram is fine when nested in a styled component, however dropdown (keeps initiating onChange) and Map (flickers due to total reload) have issues!
 
     let highlightValues = [];
-    if(censusData.hasOwnProperty("primaryData")){
-      highlightValues = censusData.primaryData.filter(st=>selectionLabels.highlightStates.indexOf(st.id)>-1).map(st=>st.value);  
+    if (censusData.hasOwnProperty("primaryData")) {
+      highlightValues = censusData.primaryData.filter(st => selectionLabels.highlightStates.indexOf(st.id) > -1).map(st => st.value);
       console.log(highlightValues);
     }
-    
-    
+
+    const InstructionsSecondary = styled.div`
+      font-family: CustomFont;
+      font-size: 1.1em;
+    `;
 
     return (
-      <div onClick={() => { this.clearSelections() }} >
+      <div>
         <Header />
-        <Dropdown optionSet={dataOptions} onChange={(val) => { this.handleOptionChange("primaryData", val) }} defaultSelection={0} />
+
         {censusData.hasOwnProperty("primaryData") &&
           <div>
-            <MapUSA renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightStates={selectionLabels.highlightStates} />
-            <Histogram renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightValues={highlightValues} />
+            <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("primaryData", val) }} selectedItem={selectionLabels.primaryData.itemNumber} />
+            <div>
+              <MapUSA renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightStates={selectionLabels.highlightStates} />
+              <Histogram renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightValues={highlightValues} />
+            </div>
+            <ClearFloatHack />
+
+            <InstructionsSecondary>
+              <p>Select a secondary variable for the scatter plot below</p>
+              <p>{selectionLabels.primaryData.label} vs. <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("secondaryData", val) }} selectedItem={selectionLabels.secondaryData.itemNumber} /></p>
+            </InstructionsSecondary>
+
           </div>
         }
 
-        <ClearFloatHack />
 
-        <div>
-          <p>Select a secondary variable for the scatter plot below</p>
-          <p>{selectionLabels.primaryData} vs. <Dropdown optionSet={dataOptions} onChange={(val) => { this.handleOptionChange("secondaryData", val) }} defaultSelection={dataOptions.length - 1} /></p>
-        </div>
 
         {censusData.hasOwnProperty("secondaryData") &&
 
@@ -92,14 +120,14 @@ class CensusApp extends Component {
             <ScatterPlotLine
               primaryData={censusData.primaryData}
               secondaryData={censusData.secondaryData}
-              primaryLabel={selectionLabels.primaryData}
-              secondaryLabel={selectionLabels.secondaryData}
+              primaryLabel={selectionLabels.primaryData.label}
+              secondaryLabel={selectionLabels.secondaryData.label}
               highlightStates={selectionLabels.highlightStates}
               uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} />
           </div>
         }
 
-        <MessageModal message={selectionLabels.message} />
+        <MessageModal message={selectionLabels.message} interactionHandler={()=>{this.clearSelections()}} showButton={highlightValues.length>0} />
         <Footer />
       </div>
     );
@@ -112,7 +140,6 @@ class CensusApp extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    dataOptions: state.dataOptions,
     censusData: state.censusData,
     selectionLabels: state.selectionLabels
   }

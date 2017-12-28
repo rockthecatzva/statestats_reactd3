@@ -26,7 +26,7 @@ class CensusApp extends Component {
     this.clearSelections = this.clearSelections.bind(this);
     const key = "47498d7e18b87cc6d3ffcc3b61ad9f9f5d2be790",
       standardAPIObj = {
-        "url": "https://api.census.gov/data/2015/acs1/profile?",
+        "url": "https://api.census.gov/data/2016/acs/acs1/profile?",
         "for": "state:*",
         "key": key,
       };
@@ -34,7 +34,7 @@ class CensusApp extends Component {
     this.dropDownOptions = [
       { "label": "High School Only Education", "data": { ...standardAPIObj, "get": "NAME,DP02_0061E,DP02_0058E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP02_0061E"], 10) / parseInt(v["DP02_0058E"], 10)) * 100), "numformat": "%" } } } },
       { "label": "Bachelors Education", "data": { ...standardAPIObj, "get": "NAME,DP02_0064E,DP02_0058E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP02_0064E"], 10) / parseInt(v["DP02_0058E"], 10)) * 100), "numformat": "%" } } } },
-      { "label": "Unmarried Births (per 1k)", "data": { ...standardAPIObj, "get": "NAME,DP02_0038E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseInt(v["DP02_0038E"], 10), "numformat": "(per 1k)" } } } },
+      { "label": "Unmarried Births (per 1k)", "data": { ...standardAPIObj, "get": "NAME,DP02_0038E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseInt(v["DP02_0038E"], 10), "numformat": " (per 1k)" } } } },
       { "label": "White", "data": { ...standardAPIObj, "get": "NAME,DP05_0032E,DP05_0028E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP05_0032E"], 10) / parseInt(v["DP05_0028E"], 10)) * 100), "numformat": "%" } } } },
       { "label": "Black", "data": { ...standardAPIObj, "get": "NAME,DP05_0033E,DP05_0028E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP05_0033E"], 10) / parseInt(v["DP05_0028E"], 10)) * 100), "numformat": "%" } } } },
       { "label": "Hispanic", "data": { ...standardAPIObj, "get": "NAME,DP05_0066E,DP05_0065E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP05_0066E"], 10) / parseInt(v["DP05_0065E"], 10)) * 100), "numformat": "%" } } } },
@@ -79,7 +79,8 @@ class CensusApp extends Component {
 
     //Styled-components - causes continuous-remounting of components that have state or use componentDidMount, 
     //so Histogram is fine when nested in a styled component, however dropdown (keeps initiating onChange) and Map (flickers due to total reload) have issues!
-
+    
+    //Map cannont be nested in a styled-component!!
     let highlightValues = [];
     if (censusData.hasOwnProperty("primaryData")) {
       highlightValues = censusData.primaryData.filter(st => selectionLabels.highlightStates.indexOf(st.id) > -1).map(st => st.value);
@@ -89,24 +90,43 @@ class CensusApp extends Component {
     const InstructionsSecondary = styled.div`
       font-family: CustomFont;
       font-size: 1.1em;
+      text-align: center;
     `;
+
+    const SmallMargins = styled.p`
+      margin-bottom: 2px;
+      margin-top: 2px;`;
+
+    const LineDiv = styled.div`
+    border-bottom: solid 1px;
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 1em;
+      `;
 
     return (
       <div>
         <Header />
-
+        <LineDiv />
+        <InstructionsSecondary>
+          <SmallMargins>Select a demographic from the dropdown list:</SmallMargins>
+        </InstructionsSecondary>
         {censusData.hasOwnProperty("primaryData") &&
           <div>
-            <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("primaryData", val) }} selectedItem={selectionLabels.primaryData.itemNumber} />
+            <InstructionsSecondary>
+              <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("primaryData", val) }} selectedItem={selectionLabels.primaryData.itemNumber} />
+            </InstructionsSecondary>
             <div>
               <MapUSA renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightStates={selectionLabels.highlightStates} />
               <Histogram renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightValues={highlightValues} />
             </div>
             <ClearFloatHack />
 
+            <LineDiv />
             <InstructionsSecondary>
-              <p>Select a secondary variable for the scatter plot below</p>
-              <p>{selectionLabels.primaryData.label} vs. <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("secondaryData", val) }} selectedItem={selectionLabels.secondaryData.itemNumber} /></p>
+              <SmallMargins>Select a secondary variable for the scatter plot below</SmallMargins>
+              <SmallMargins>{selectionLabels.primaryData.label} vs. <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("secondaryData", val) }} selectedItem={selectionLabels.secondaryData.itemNumber} /></SmallMargins>
             </InstructionsSecondary>
 
           </div>
@@ -127,7 +147,7 @@ class CensusApp extends Component {
           </div>
         }
 
-        <MessageModal message={selectionLabels.message} interactionHandler={()=>{this.clearSelections()}} showButton={highlightValues.length>0} />
+        <MessageModal message={selectionLabels.message} interactionHandler={() => { this.clearSelections() }} showButton={highlightValues.length > 0} />
         <Footer />
       </div>
     );

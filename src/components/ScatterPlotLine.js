@@ -15,7 +15,7 @@ import { extent as d3ArrayExtent } from 'd3-array';
 
 export default class ScatterPlotLine extends Component {
     render() {
-        const {primaryData, secondaryData, primaryLabel, secondaryLabel, highlightStates, uxCallback} = this.props;
+        const { primaryData, secondaryData, primaryLabel, secondaryLabel, highlightStates, uxCallback } = this.props;
 
 
         const margin = {
@@ -26,7 +26,7 @@ export default class ScatterPlotLine extends Component {
         },
             buffer = 0.1,
             tickSize = 4,
-            radius = 6,
+            radius = 4,
             labelOffset = 30;
 
         const width = 600,
@@ -36,6 +36,7 @@ export default class ScatterPlotLine extends Component {
                 width: ${width + "px"};
                 height: ${height + "px"};
                 margin: auto auto;
+                font-family: CustomFont;
               `;
 
         const SVG = styled.svg`
@@ -48,21 +49,27 @@ export default class ScatterPlotLine extends Component {
             `;
 
         const NormalBubble = styled.circle`
-            stroke: rgb(0,0,0);
-            fill: rgb(255,255,255);
+            stroke: #000;
+            fill: #000;
         `;
 
         const HighlightBubble = styled.circle`
-            
             fill: #d299fd;
+            stroke: #000;
         `;
 
         const GrayBubble = styled.circle`
-            stroke: rgb(192,192,192);
+            stroke:  #c5c5c5;
             stroke-width: 2;
             fill: #c5c5c5;
         `;
 
+        const Title = styled.span`
+        width: 100%;
+        font-size: 0.9em;
+        text-align: center;
+        float: left;
+      `;
         var circles = [];
 
         if (primaryData && secondaryData) {
@@ -115,16 +122,16 @@ export default class ScatterPlotLine extends Component {
                         }).length) {
                             return (<HighlightBubble key={i} cx={x} cy={y} r={radius} onClick={uxevent} ></HighlightBubble>);
                         }
-                        else{
+                        else {
                             return (<GrayBubble key={i} cx={x} cy={y} r={radius} onClick={uxevent} ></GrayBubble>);
                         }
 
                     }
-                    else{
+                    else {
                         return (<NormalBubble key={i} cx={x} cy={y} r={radius} onClick={uxevent} ></NormalBubble>);
                     }
 
-                    
+
                 }
 
                 return [];
@@ -135,6 +142,7 @@ export default class ScatterPlotLine extends Component {
 
         return (
             <Scatter>
+                <Title>Scatter Plot of {primaryLabel} vs. {secondaryLabel}</Title>
                 <SVG>
                     <g className="xAxis" transform={"translate(0," + (height - margin.bottom) + ")"} ref={node => d3.select(node).call(xAxis)} />
                     <g className="yAxis" transform={"translate(" + margin.left + ",0)"} ref={node => d3.select(node).call(yAxis)} />

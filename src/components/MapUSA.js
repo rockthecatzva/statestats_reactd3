@@ -44,7 +44,6 @@ export default class MapUSA extends Component {
 
     const Map = styled.div`
     font-family: CustomFont;
-      color: red;
       width: ${width + "px"};
       height: ${height + "px"};
       float: left;`;
@@ -55,7 +54,7 @@ export default class MapUSA extends Component {
 
     const Title = styled.span`
       width: 100%;
-      font-size: 1.1em;
+      font-size: 0.9em;
       text-align: center;
       float: left;`;
 

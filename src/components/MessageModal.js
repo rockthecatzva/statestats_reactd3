@@ -1,20 +1,19 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 export default class MessageModal extends Component {
   render() {
-      const {message, interactionHandler, showButton} = this.props;
-      const Modal = styled.div`
-        position: fixed;
+    const { message, interactionHandler, showButton } = this.props;
+    const Modal = styled.div`
         bottom: 4px;
-        
         padding: 5px;
-        padding-bottom: 10px;
-        margin: auto auto;
         background-color: #d299fd;
         border-radius: 5px;
-      `;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;`;
+
 
     const CloseX = styled.a`
         position: absolute;
@@ -30,23 +29,36 @@ export default class MessageModal extends Component {
       border: solid 1px #000;
       border-radius: 3px;  
       font-size: 0.9em;
-      position: relative;
+      cursor: pointer;
+      margin-bottom: 4px;
       `;
 
+    const FixedDiv = styled.div`
+      position: fixed;
+      bottom: 1em;
+      width: 100%;`;
+
+    const ContainerDiv = styled.div`
+      width: 100%;
+      text-align: center;
+      margin-bottom: 0.5em;`;
+
     return (
-      <Modal>
+      <FixedDiv>
+        <Modal>
           <CloseX>x</CloseX>
           <p>{message}</p>
-          {showButton && 
-          <a href="#" onClick={()=>{interactionHandler()}} ><Deselect>Deselect</Deselect></a>
+          {showButton &&
+            <ContainerDiv><Deselect onClick={(e) => { e.preventDefault(); interactionHandler() }}>Deselect</Deselect></ContainerDiv>
           }
-      </Modal>
+        </Modal>
+      </FixedDiv>
     )
   }
 }
- 
+
 MessageModal.propTypes = {
-    message: PropTypes.string.isRequired,
-    interactionHandler: PropTypes.func.isRequired,
-    showButton: PropTypes.bool.isRequired
-  }
+  message: PropTypes.string.isRequired,
+  interactionHandler: PropTypes.func.isRequired,
+  showButton: PropTypes.bool.isRequired,
+}

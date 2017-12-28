@@ -31,10 +31,14 @@ export const clearSelections = ()=>{
 
 function receiveData(group, data) {
   //console.log(data)
+
   return {
     type: RECEIVE_CENSUSDATA,
     group,
-    data
+    data: data.filter((s)=>{
+      if(s["state"]!=="Puerto Rico") return s;
+      return;
+    })
   }
 }
 

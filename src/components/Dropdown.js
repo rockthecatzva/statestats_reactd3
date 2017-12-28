@@ -7,12 +7,12 @@ export default class Dropdown extends Component {
   render() {
     const { optionSet, onChange, selectedItem } = this.props
     const MainSelect = styled.select`
-      font-family: CustomFont;
       font-size: 1.1em;
+      margin-bottom: 1em;
       `;
 
     return (
-      <span>
+      
         <MainSelect onChange={e => { onChange(parseInt(e.target.value, 10))}} value={selectedItem}  >
           {optionSet.map((o,i) => (
             <option value={i} key={i} >
@@ -20,7 +20,7 @@ export default class Dropdown extends Component {
             </option>
           ))}
         </MainSelect>
-      </span>
+      
     )
   }
 }

@@ -69,21 +69,21 @@ export default class Histogram extends Component {
 
     const Title = styled.span`
       width: 100%;
-      font-size: 1.1em;
+      font-size: 0.9em;
       text-align: center;
       float: left;
     `;
 
-    const margin = { top: 20, right: 5, bottom: 20, left: 5 },
+    const margin = { top: 20, right: 10, bottom: 20, left: 5 },
       labelMargin = 5,
       tickSize = 10,
       axisMargin = 21;
 
     const valSet = renderData.map((st, i) => { return st["value"] });
-    //console.log(valSet, d3.min(valSet), d3.max(valSet))
+    console.log(valSet, d3.min(valSet), d3.max(valSet))
 
     const xScale = d3.scaleLinear()
-      .domain([d3.min(valSet), d3.max(valSet)])
+      .domain([d3.min(valSet), d3.max(valSet)+1])
       .range([margin.left, width - margin.right])
       .interpolate(d3.interpolateRound)
 
@@ -106,10 +106,13 @@ export default class Histogram extends Component {
       labels = [];
 
     bins.forEach((b, i) => {
+      console.log(i,b)
       let x = xScale(b.x0),
         h = (yScale(b.length)),
         y = (height - h) - margin.bottom,//yScale(b.length),
-        w = (b.x1 === b.x0) ? xScale(1) : xScale(b.x1) - xScale(b.x0);
+        w = (b.x1 === b.x0) ? xScale(b.x1+1)-xScale(b.x0) : xScale(b.x1) - xScale(b.x0);
+
+        console.log(b.x1, b.x1, w, xScale(b.x1), xScale(b.x0) )
 
       let barOb = {
         key: i,

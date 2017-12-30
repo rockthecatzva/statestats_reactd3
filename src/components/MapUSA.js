@@ -86,7 +86,7 @@ export default class MapUSA extends Component {
           }
           
         }
-        return (<path d={path(d)} key={i} stroke={"#fff"} fill={colorVal} onClick={(e) => { this.clickHandler(e, stateInfo[0]) }} />);
+        return (<path d={path(d)} key={i} stroke={"#000"} fill={colorVal} onClick={(e) => { this.clickHandler(e, stateInfo[0]) }} />);
       })
     }
 

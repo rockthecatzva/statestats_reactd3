@@ -30,21 +30,18 @@ export const clearSelections = ()=>{
 
 
 function receiveData(group, data) {
-  //console.log(data)
-
   return {
     type: RECEIVE_CENSUSDATA,
     group,
     data: data.filter((s)=>{
-      if(s["state"]!=="Puerto Rico") return s;
-      return;
+      if(s["state"]!=="Puerto Rico") return true;
+      return false;
     })
   }
 }
 
 
 export function fetchCensusData(datagroup, apisettings) {
-  console.log(datagroup, apisettings)
   return (dispatch) => {
     return fetch(buildURL(apisettings))
       .then(response => response.json())

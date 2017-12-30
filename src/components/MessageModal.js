@@ -14,14 +14,6 @@ export default class MessageModal extends Component {
         margin-left: auto;
         margin-right: auto;`;
 
-
-    const CloseX = styled.a`
-        position: absolute;
-        right: 5px;
-        top: 0px;
-        font-size: 1em;
-    `;
-
     const Deselect = styled.span`
       padding: 4px;
       color: black;
@@ -35,7 +27,8 @@ export default class MessageModal extends Component {
 
     const FixedDiv = styled.div`
       position: fixed;
-      bottom: 1em;
+      bottom: 6em;
+      height: 0px;
       width: 100%;`;
 
     const ContainerDiv = styled.div`
@@ -46,7 +39,7 @@ export default class MessageModal extends Component {
     return (
       <FixedDiv>
         <Modal>
-          <CloseX>x</CloseX>
+          
           <p>{message}</p>
           {showButton &&
             <ContainerDiv><Deselect onClick={(e) => { e.preventDefault(); interactionHandler() }}>Deselect</Deselect></ContainerDiv>

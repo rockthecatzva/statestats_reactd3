@@ -36,40 +36,67 @@ export default class ScatterPlotLine extends Component {
                 width: ${width + "px"};
                 height: ${height + "px"};
                 margin: auto auto;
-                font-family: CustomFont;
-              `;
+                font-family: CustomFont;`;
 
         const SVG = styled.svg`
             width: ${width + "px"};
-            height: ${height + "px"};
-              `;
+            height: ${height + "px"};`;
 
         const LabelText = styled.text`
-              text-anchor: middle;
-            `;
+              text-anchor: middle;`;
 
         const NormalBubble = styled.circle`
             stroke: #000;
-            fill: #000;
-        `;
+            fill: #000;`;
 
         const HighlightBubble = styled.circle`
             fill: #d299fd;
-            stroke: #000;
-        `;
+            stroke: #000;`;
 
         const GrayBubble = styled.circle`
             stroke:  #c5c5c5;
             stroke-width: 2;
-            fill: #c5c5c5;
-        `;
+            fill: #c5c5c5;`;
 
         const Title = styled.span`
         width: 100%;
         font-size: 0.9em;
         text-align: center;
-        float: left;
-      `;
+        float: left;`;
+
+
+        const StatenameDiv = styled.div`
+        text-align: center;
+        font-size: 1em;
+        color: #fff;`
+
+        const HorizontalLine = styled.div`
+        height: 0px;
+        width: 90%;
+        margin-top: 2px;
+        margin-bottom: 4px;
+
+        border-bottom: solid 1px #fff;
+        color: #fff;
+        margin-left: auto;
+        margin-right: auto;`
+
+        const ValueSpan = styled.span`
+        text-align: center;
+        font-size: 1.8em;
+        color: #fff;`;
+
+        const NumformatSpan = styled.span`
+        font-size: 0.5em;`
+
+        const LabelSpan = styled.span`
+        padding-left: 0.7em;
+        text-align: center;
+        font-size: 0.7em;
+        color: #fff;
+        margin-bottom: 0.3em;`;
+
+
         var circles = [];
 
         if (primaryData && secondaryData) {
@@ -108,7 +135,19 @@ export default class ScatterPlotLine extends Component {
                     //arrow function here might use more memory than necessary?
                     const uxevent = (e) => {
                         e.stopPropagation();
-                        const message = c.state + " " + primaryLabel + ": " + c.value + primaryData[0].numformat + ", " + secondaryLabel + ": " + pairVal[0].value + secondaryData[0].numformat
+                        const message = [<div>
+                            <StatenameDiv>{c.state.toUpperCase() + ":"}</StatenameDiv>
+                            <HorizontalLine />
+                            <div>
+                                <ValueSpan>{c.value}<NumformatSpan>{primaryData[0].numformat}</NumformatSpan></ValueSpan>
+                                <LabelSpan>{primaryLabel.toUpperCase()}</LabelSpan>
+                            </div>
+                            <div>
+                                <ValueSpan>{pairVal[0].value}<NumformatSpan>{secondaryData[0].numformat}</NumformatSpan></ValueSpan>
+                                <LabelSpan>{secondaryLabel.toUpperCase()}</LabelSpan>
+                            </div>
+                            <HorizontalLine />
+                        </div>]
                         uxCallback(message, [c.id]);
                     }
 

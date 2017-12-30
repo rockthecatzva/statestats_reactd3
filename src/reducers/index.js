@@ -7,14 +7,14 @@ import {
 } from '../actions'
 
 
-function selectionLabels(state = { "message": "Click on a graphic for more info", "highlightStates": [] }, action) {
+function selectionLabels(state = { "message": [], "highlightStates": [] }, action) {
   switch (action.type) {
     case RECEIVE_CENSUSDATA:
-      return { ...state, "highlightStates":[], "message": "Click on a graphic for more info" };
+      return { ...state, "highlightStates":[], "message": [] };
     case VIZ_CLICK:
       return { ...state, ...{ "message": action.message, "highlightStates": action.highlightStates } };
     case CLEAR_SELECTIONS:
-      return { ...state, ...{ "message": "Click on a graphic for more info", "highlightStates": [] } };
+      return { ...state, ...{ "message": [], "highlightStates": [] } };
     case CHANGE_DATALABEL:
       return {...state, [action.group]: action.option}
     default:

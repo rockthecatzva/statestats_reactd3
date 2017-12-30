@@ -27,14 +27,7 @@ export default class MapUSA extends Component {
       })
   }
 
-  clickHandler(e, stateInfo) {
-    console.log(stateInfo);
-    e.stopPropagation();
-    const message = stateInfo.state + ": " + stateInfo.value + stateInfo.numformat;
 
-    this.props.uxCallback(message, [stateInfo.id]);
-
-  }
 
   render() {
     console.log("Map Rendering")
@@ -58,6 +51,40 @@ export default class MapUSA extends Component {
       text-align: center;
       float: left;`;
 
+
+    const StatenameDiv = styled.div`
+      text-align: center;
+      font-size: 1em;
+      color: #fff;`
+
+    const HorizontalLine = styled.div`
+    height: 0px;
+    width: 90%;
+    margin-top: 2px;
+    margin-bottom: 4px;
+
+    border-bottom: solid 1px #fff;
+    color: #fff;
+    margin-left: auto;
+    margin-right: auto;`
+
+    const ValueDiv = styled.div`
+    text-align: center;
+    font-size: 1.8em;
+    color: #fff;`;
+
+    const NumformatSpan = styled.span`
+    font-size: 0.5em;`
+
+    const LabelDiv = styled.div`
+    text-align: center;
+    font-size: 0.7em;
+    color: #fff;
+    margin-bottom: 0.3em;`;
+
+
+
+
     const highlightColor = "#d299fd",
       highlightGreyout = "#c5c5c5";
 
@@ -72,21 +99,39 @@ export default class MapUSA extends Component {
         colorScale = d3.scaleLinear().domain([min_val, median_val, max_val]).range(['blue', 'white', 'red']);
 
 
+      const clickHandler = (e, stateInfo) => {
+        console.log(stateInfo);
+        e.stopPropagation();
+
+
+
+        const message = [<div>
+          <StatenameDiv>{stateInfo.state.toUpperCase() + ":"}</StatenameDiv>
+          <HorizontalLine />
+          <ValueDiv>{stateInfo.value}<NumformatSpan>{stateInfo.numformat}</NumformatSpan></ValueDiv>
+          <LabelDiv>{this.props.selectedLabel.toUpperCase()}</LabelDiv>
+          <HorizontalLine />
+        </div>];
+
+        this.props.uxCallback(message, [stateInfo.id]);
+
+      }
+
 
       renderStates = this.state.statePaths.features.map((d, i) => {
         let colorVal = "#fff";
-        const stateInfo = renderData.filter(st => { if (st.id === d.id) return true; return false;});
+        const stateInfo = renderData.filter(st => { if (st.id === d.id) return true; return false; });
 
         if (highlightStates.length > 0) {
           colorVal = highlightStates.filter(st => { if (st === d.id) { return true } return false }).length > 0 ? highlightColor : highlightGreyout;
         }
         else {
-          if (stateInfo.length){
+          if (stateInfo.length) {
             colorVal = colorScale(stateInfo[0].value);
           }
-          
+
         }
-        return (<path d={path(d)} key={i} stroke={"#000"} fill={colorVal} onClick={(e) => { this.clickHandler(e, stateInfo[0]) }} />);
+        return (<path d={path(d)} key={i} stroke={"#000"} fill={colorVal} onClick={(e) => { clickHandler(e, stateInfo[0]) }} />);
       })
     }
 
@@ -104,5 +149,6 @@ export default class MapUSA extends Component {
 MapUSA.propTypes = {
   renderData: PropTypes.array.isRequired,
   uxCallback: PropTypes.func.isRequired,
-  highlightStates: PropTypes.array.isRequired
+  highlightStates: PropTypes.array.isRequired,
+  selectedLabel: PropTypes.string.isRequired
 }

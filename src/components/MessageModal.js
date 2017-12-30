@@ -6,7 +6,9 @@ export default class MessageModal extends Component {
   render() {
     const { message, interactionHandler, showButton } = this.props;
     const Modal = styled.div`
-        bottom: 4px;
+    font-family: CustomFont;
+    position: relative;
+        bottom: 3em;
         padding: 5px;
         background-color: #d299fd;
         border-radius: 5px;
@@ -20,7 +22,7 @@ export default class MessageModal extends Component {
       background-color: white;
       border: solid 1px #000;
       border-radius: 3px;  
-      font-size: 0.9em;
+      font-size: 0.8em;
       cursor: pointer;
       margin-bottom: 4px;
       `;
@@ -34,24 +36,27 @@ export default class MessageModal extends Component {
     const ContainerDiv = styled.div`
       width: 100%;
       text-align: center;
-      margin-bottom: 0.5em;`;
+      margin-bottom: 0.5em;
+      margin-top: 0.5em;`;
 
     return (
       <FixedDiv>
-        <Modal>
-          
-          <p>{message}</p>
+        {message.length && 
+          <Modal>
+          {message}
           {showButton &&
             <ContainerDiv><Deselect onClick={(e) => { e.preventDefault(); interactionHandler() }}>Deselect</Deselect></ContainerDiv>
           }
         </Modal>
+        }
+        
       </FixedDiv>
     )
   }
 }
 
 MessageModal.propTypes = {
-  message: PropTypes.string.isRequired,
+  message: PropTypes.array.isRequired,
   interactionHandler: PropTypes.func.isRequired,
   showButton: PropTypes.bool.isRequired,
 }

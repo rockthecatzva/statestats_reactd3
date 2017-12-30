@@ -9,30 +9,7 @@ import {
 
 export default class Histogram extends Component {
 
-  clickHandler(e, vals) {
-    e.stopPropagation();
-    const highNums = Object.entries(vals).filter(r => {
-      if (Number.isInteger(parseInt(r[0], 10))) return true;
-      return false;
-    }).map(n => { return parseInt(n[1], 10); });
 
-
-
-    const max = Math.max(...highNums),
-    min = Math.min(...highNums),
-    numformat = this.props.renderData[0].numformat,
-    message = (max === min) ? "States with " + min + numformat : "States with " + min + "-" + max + numformat,
-    statesInRange = this.props.renderData.filter(st => {
-      return highNums.includes(st.value);
-    }).map(st => { return st.id });
-
-
-
-
-    //this.props.uxCallback(highNums);
-    this.props.uxCallback(message, statesInRange);
-    console.log(message, statesInRange);
-  }
 
   render() {
     console.log("Histogram Rendering")
@@ -73,6 +50,60 @@ export default class Histogram extends Component {
       text-align: center;
       float: left;
     `;
+    
+    const HorizontalLine = styled.div`
+  height: 0px;
+  width: 90%;
+  margin-bottom: 4px;
+  border-bottom: solid 1px #fff;
+  color: #fff;
+  margin-left: auto;
+  margin-right: auto;`
+
+    const ValueDiv = styled.div`
+  text-align: center;
+  font-size: 1.8em;
+  color: #fff;`;
+
+    const NumformatSpan = styled.span`
+  font-size: 0.5em;`
+
+    const LabelDiv = styled.div`
+  text-align: center;
+  font-size: 0.7em;
+  color: #fff;
+  margin-bottom: 0.3em;`;
+
+    const clickHandler = (e, vals) => {
+      e.stopPropagation();
+      const highNums = Object.entries(vals).filter(r => {
+        if (Number.isInteger(parseInt(r[0], 10))) return true;
+        return false;
+      }).map(n => { return parseInt(n[1], 10); });
+
+      const max = Math.max(...highNums),
+        min = Math.min(...highNums),
+        numformat = this.props.renderData[0].numformat,
+        message = (max === min) ?
+          [<div>
+            <ValueDiv>{min}<NumformatSpan>{numformat}</NumformatSpan></ValueDiv>
+            <HorizontalLine />
+            <LabelDiv>{this.props.selectedLabel.toUpperCase()}</LabelDiv>
+            <HorizontalLine />
+          </div>]
+          :
+          [<div>
+            <ValueDiv>{min + "-" + max}<NumformatSpan>{numformat}</NumformatSpan></ValueDiv>
+            <HorizontalLine />
+            <LabelDiv>{this.props.selectedLabel.toUpperCase()}</LabelDiv>
+            <HorizontalLine />
+          </div>],
+        statesInRange = this.props.renderData.filter(st => {
+          return highNums.includes(st.value);
+        }).map(st => { return st.id });
+
+      this.props.uxCallback(message, statesInRange);
+    }
 
     const margin = { top: 20, right: 10, bottom: 20, left: 5 },
       labelMargin = 5,
@@ -82,7 +113,7 @@ export default class Histogram extends Component {
     const valSet = renderData.map((st, i) => { return st["value"] });
 
     const xScale = d3.scaleLinear()
-      .domain([d3.min(valSet), d3.max(valSet)+1])
+      .domain([d3.min(valSet), d3.max(valSet) + 1])
       .range([margin.left, width - margin.right])
       .interpolate(d3.interpolateRound)
 
@@ -108,7 +139,7 @@ export default class Histogram extends Component {
       let x = xScale(b.x0),
         h = (yScale(b.length)),
         y = (height - h) - margin.bottom,//yScale(b.length),
-        w = (b.x1 === b.x0) ? xScale(b.x1+1)-xScale(b.x0) : xScale(b.x1) - xScale(b.x0);
+        w = (b.x1 === b.x0) ? xScale(b.x1 + 1) - xScale(b.x0) : xScale(b.x1) - xScale(b.x0);
 
       let barOb = {
         key: i,
@@ -116,14 +147,14 @@ export default class Histogram extends Component {
         y: y,
         width: w,
         height: h,
-        onClick: (e) => { this.clickHandler(e, b) }
+        onClick: (e) => { clickHandler(e, b) }
       };
-            
-      
-      if (b.filter(v => highlightValues.indexOf(v)>-1).length) {
+
+
+      if (b.filter(v => highlightValues.indexOf(v) > -1).length) {
         bars.push(<RectHighlight {...barOb} />);
       }
-      else{
+      else {
         bars.push(<Rect {...barOb} />);
       }
 
@@ -149,5 +180,6 @@ export default class Histogram extends Component {
 Histogram.propTypes = {
   renderData: PropTypes.array.isRequired,
   highlightValues: PropTypes.array.isRequired,
-  uxCallback: PropTypes.func.isRequired
+  uxCallback: PropTypes.func.isRequired,
+  selectedLabel: PropTypes.string.isRequired
 }

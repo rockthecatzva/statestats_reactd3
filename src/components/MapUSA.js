@@ -32,9 +32,8 @@ export default class MapUSA extends Component {
 
   render() {
     console.log("Map Rendering")
-    const { renderData, highlightStates } = this.props;
-    const width = 800,
-      height = 500;
+    const { renderData, highlightStates, width } = this.props;
+    const height = width*.66;
 
     const Map = styled.div`
     font-family: CustomFont;
@@ -92,7 +91,7 @@ export default class MapUSA extends Component {
     let renderStates = []
 
     if (this.state.statePaths.features) {
-      let projection = d3.geoAlbersUsa().scale(800).translate([400, 200]),
+      let projection = d3.geoAlbersUsa().scale(width).translate([width/2, height/2]),
         path = d3.geoPath().projection(projection),
         max_val = d3.max(renderData, (d) => { return d['value'] }),
         min_val = d3.min(renderData, (d) => { return d['value'] }),
@@ -151,5 +150,6 @@ MapUSA.propTypes = {
   renderData: PropTypes.array.isRequired,
   uxCallback: PropTypes.func.isRequired,
   highlightStates: PropTypes.array.isRequired,
-  selectedLabel: PropTypes.string.isRequired
+  selectedLabel: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired
 }

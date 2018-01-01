@@ -13,6 +13,7 @@ export default class MessageModal extends Component {
         padding: 5px;
         background-color: #d299fd;
         border-radius: 5px;
+        border: solid 1px #000;
         width: fit-content;
         margin-left: auto;
         margin-right: auto;`;

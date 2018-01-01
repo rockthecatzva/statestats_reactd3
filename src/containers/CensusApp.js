@@ -49,10 +49,8 @@ class CensusApp extends Component {
       { "label": "Social security", "data": { ...standardAPIObj, "get": "NAME,DP03_0066PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP03_0066PE"]), "numformat": "%" } } } },
       { "label": "Supplemental Security Income", "data": { ...standardAPIObj, "get": "NAME,DP03_0070PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP03_0070PE"]), "numformat": "%" } } } },
       { "label": "Food stamps/SNAP", "data": { ...standardAPIObj, "get": "NAME,DP03_0074PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP03_0074PE"]), "numformat": "%" } } } },
-      { "label": "Male:Female Pay Ratio", "data": { ...standardAPIObj, "get": "NAME,DP03_0093E,DP03_0094E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": (parseInt(v["DP03_0093E"])/parseInt(v["DP03_0094E"]),10), "numformat": "%" } } } },
+      { "label": "Male:Female Pay Ratio", "data": { ...standardAPIObj, "get": "NAME,DP03_0093E,DP03_0094E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": +(parseInt(v["DP03_0093E"]) / parseInt(v["DP03_0094E"])).toFixed(1), "numformat": "%" } } } },
       { "label": "Public health insurance", "data": { ...standardAPIObj, "get": "NAME,DP03_0098PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP03_0098PE"]), "numformat": "%" } } } },
-      
-      
     ];
     this.handleOptionChange("primaryData", 0)
     this.handleOptionChange("secondaryData", this.dropDownOptions.length - 1)
@@ -76,7 +74,14 @@ class CensusApp extends Component {
   render() {
     const { censusData, selectionLabels } = this.props;
 
-    //a styled-div with dropdown inside caused
+    const width = window.screen.availWidth,
+          height = window.screen.availHeight,
+          mapW = width >= 1024 ? width*.65 : width,
+          histoW = width >= 1024 ? width*.33 : width,
+          scatterW = width >= 1024 ? width*.5 : width;
+
+    console.log(width, height)
+
 
 
     injectGlobal`
@@ -91,7 +96,7 @@ class CensusApp extends Component {
 
     //Styled-components - causes continuous-remounting of components that have state or use componentDidMount, 
     //so Histogram is fine when nested in a styled component, however dropdown (keeps initiating onChange) and Map (flickers due to total reload) have issues!
-    
+
     //Map cannont be nested in a styled-component!!
     let highlightValues = [];
     if (censusData.hasOwnProperty("primaryData")) {
@@ -110,7 +115,7 @@ class CensusApp extends Component {
       margin-top: 2px;`;
 
     const LineDiv = styled.div`
-    border-bottom: solid 1px;
+    border-bottom: solid 1px #c5c5c5;
       width: 70%;
       margin-left: auto;
       margin-right: auto;
@@ -130,8 +135,8 @@ class CensusApp extends Component {
               <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("primaryData", val) }} selectedItem={selectionLabels.primaryData.itemNumber} />
             </InstructionsSecondary>
             <div>
-              <MapUSA renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightStates={selectionLabels.highlightStates} selectedLabel={selectionLabels.primaryData.label} />
-              <Histogram renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightValues={highlightValues} selectedLabel={selectionLabels.primaryData.label} />
+              <MapUSA renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightStates={selectionLabels.highlightStates} selectedLabel={selectionLabels.primaryData.label} width={mapW} />
+              <Histogram renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightValues={highlightValues} selectedLabel={selectionLabels.primaryData.label} width={histoW} />
             </div>
             <ClearFloatHack />
 
@@ -155,7 +160,8 @@ class CensusApp extends Component {
               primaryLabel={selectionLabels.primaryData.label}
               secondaryLabel={selectionLabels.secondaryData.label}
               highlightStates={selectionLabels.highlightStates}
-              uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} />
+              uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }}
+              width={scatterW} />
           </div>
         }
 

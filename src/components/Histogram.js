@@ -13,9 +13,8 @@ export default class Histogram extends Component {
 
   render() {
     console.log("Histogram Rendering")
-    const { renderData, highlightValues } = this.props;
-    const width = 400,
-      height = 400,
+    const { renderData, highlightValues, width } = this.props;
+    const height = 400,
       numBins = 10;
 
     const Histo = styled.div`
@@ -23,6 +22,7 @@ export default class Histogram extends Component {
           width: ${width + "px"};
           height: ${height + "px"};
           float: left;
+          margin-bottom: 3em;
         `;
 
     const SVG = styled.svg`
@@ -76,7 +76,7 @@ export default class Histogram extends Component {
 
     const clickHandler = (e, vals) => {
       e.stopPropagation();
-      console.log(vals)
+      //console.log(vals)
       //JUST REMOVE x0 and x1 from the array!!!
       /*
       const highNums = Object.entries(vals).filter(r => {
@@ -93,7 +93,7 @@ export default class Histogram extends Component {
         return vals[k];
       })
 
-      console.log(highNums)
+      //console.log(highNums)
       const max = Math.max(...highNums),
         min = Math.min(...highNums),
         numformat = this.props.renderData[0].numformat,
@@ -138,10 +138,16 @@ export default class Histogram extends Component {
       .domain([0, d3.max(bins, function (d) { return d.length; })])
       .range([0, height - (margin.top + margin.bottom)]);
 
+    console.log(Math.trunc(bins[0].x1)===Math.trunc(bins[0].x0))
+    console.log(Math.trunc(bins[0].x1), Math.trunc(bins[0].x0))
+    console.log(bins)
+
+    const format = (Math.trunc(bins[0].x1)===Math.trunc(bins[0].x0)) ? ".1f":".0f";
+
     const xAxis = d3AxisBottom()
       .scale(xScale)
       .tickSize(tickSize)
-      .tickFormat(d3.format(",.0f"));
+      .tickFormat(d3.format(format));
 
     const renderAxis = <g className="xAxis" transform={"translate(0," + (height - axisMargin) + ")"} ref={node => d3.select(node).call(xAxis)} />
 
@@ -194,5 +200,6 @@ Histogram.propTypes = {
   renderData: PropTypes.array.isRequired,
   highlightValues: PropTypes.array.isRequired,
   uxCallback: PropTypes.func.isRequired,
-  selectedLabel: PropTypes.string.isRequired
+  selectedLabel: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired
 }

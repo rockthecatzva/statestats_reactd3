@@ -12,6 +12,7 @@ export default class MapUSA extends Component {
 
   componentDidMount() {
     console.log("Map Mounted");
+    //fetch("http://rockthecatzva.com/statestats-reactd3/us.json")
     fetch("/us.json")
       .then(response => {
         if (response.status !== 200) {

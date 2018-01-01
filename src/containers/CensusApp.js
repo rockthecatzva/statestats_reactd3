@@ -40,7 +40,19 @@ class CensusApp extends Component {
       { "label": "Hispanic", "data": { ...standardAPIObj, "get": "NAME,DP05_0066E,DP05_0065E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP05_0066E"], 10) / parseInt(v["DP05_0065E"], 10)) * 100), "numformat": "%" } } } },
       { "label": "No Health Insurance", "data": { ...standardAPIObj, "get": "NAME,DP03_0099E,DP03_0095E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.round((parseInt(v["DP03_0099E"], 10) / parseInt(v["DP03_0095E"], 10)) * 100), "numformat": "%" } } } },
       { "label": "Median Age", "data": { ...standardAPIObj, "get": "NAME,DP05_0017E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseInt(v["DP05_0017E"], 10), "numformat": " years" } } } },
-      { "label": "Median HH Income", "data": { ...standardAPIObj, "get": "NAME,DP03_0062E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.trunc(parseInt(v["DP03_0062E"], 10) / 1000), "numformat": "k" } } } }
+      { "label": "Median HH Income", "data": { ...standardAPIObj, "get": "NAME,DP03_0062E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": Math.trunc(parseInt(v["DP03_0062E"], 10) / 1000), "numformat": "k" } } } },
+      { "label": "Divorced females", "data": { ...standardAPIObj, "get": "NAME,DP02_0035PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP02_0035PE"]), "numformat": "%" } } } },
+      { "label": "Teen births", "data": { ...standardAPIObj, "get": "NAME,DP02_0040E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP02_0040E"]), "numformat": "(per 1k)" } } } },
+      { "label": "Disability", "data": { ...standardAPIObj, "get": "NAME,DP02_0071PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP02_0071PE"]), "numformat": "%" } } } },
+      { "label": "Broadband internet", "data": { ...standardAPIObj, "get": "NAME,DP02_0152PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP02_0152PE"]), "numformat": "%" } } } },
+      { "label": "Unemployment rate", "data": { ...standardAPIObj, "get": "NAME,DP03_0009PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP03_0009PE"]), "numformat": "%" } } } },
+      { "label": "Social security", "data": { ...standardAPIObj, "get": "NAME,DP03_0066PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP03_0066PE"]), "numformat": "%" } } } },
+      { "label": "Supplemental Security Income", "data": { ...standardAPIObj, "get": "NAME,DP03_0070PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP03_0070PE"]), "numformat": "%" } } } },
+      { "label": "Food stamps/SNAP", "data": { ...standardAPIObj, "get": "NAME,DP03_0074PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP03_0074PE"]), "numformat": "%" } } } },
+      { "label": "Male:Female Pay Ratio", "data": { ...standardAPIObj, "get": "NAME,DP03_0093E,DP03_0094E", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": (parseInt(v["DP03_0093E"])/parseInt(v["DP03_0094E"]),10), "numformat": "%" } } } },
+      { "label": "Public health insurance", "data": { ...standardAPIObj, "get": "NAME,DP03_0098PE", "processor": (v, i) => { return { "id": parseInt(v["state"], 10), "state": v["NAME"], "value": parseFloat(v["DP03_0098PE"]), "numformat": "%" } } } },
+      
+      
     ];
     this.handleOptionChange("primaryData", 0)
     this.handleOptionChange("secondaryData", this.dropDownOptions.length - 1)

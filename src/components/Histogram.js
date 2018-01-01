@@ -76,11 +76,24 @@ export default class Histogram extends Component {
 
     const clickHandler = (e, vals) => {
       e.stopPropagation();
+      console.log(vals)
+      //JUST REMOVE x0 and x1 from the array!!!
+      /*
       const highNums = Object.entries(vals).filter(r => {
+        console.log(typeof(r))
         if (Number.isInteger(parseInt(r[0], 10))) return true;
         return false;
       }).map(n => { return parseInt(n[1], 10); });
+*/
 
+      const highNums = Object.keys(vals).filter(t=>{
+        if((t!=="x0")&&(t!=="x1")) return true;
+        return false;
+      }).map(k=>{
+        return vals[k];
+      })
+
+      console.log(highNums)
       const max = Math.max(...highNums),
         min = Math.min(...highNums),
         numformat = this.props.renderData[0].numformat,

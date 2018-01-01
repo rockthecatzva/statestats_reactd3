@@ -7,8 +7,9 @@ export default class MessageModal extends Component {
     const { message, interactionHandler, showButton } = this.props;
     const Modal = styled.div`
     font-family: CustomFont;
-    position: relative;
-        bottom: 3em;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,-110%);
         padding: 5px;
         background-color: #d299fd;
         border-radius: 5px;
@@ -29,7 +30,7 @@ export default class MessageModal extends Component {
 
     const FixedDiv = styled.div`
       position: fixed;
-      bottom: 6em;
+      bottom: 0em;
       height: 0px;
       width: 100%;`;
 

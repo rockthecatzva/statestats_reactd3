@@ -1,5 +1,5 @@
 
-import registerServiceWorker from './registerServiceWorker';
+//import registerServiceWorker from './registerServiceWorker';
 
 import React from 'react'
 import { render } from 'react-dom'
@@ -16,4 +16,4 @@ render(
   </Provider>,
   document.getElementById('root')
 )
-registerServiceWorker();
+//registerServiceWorker();

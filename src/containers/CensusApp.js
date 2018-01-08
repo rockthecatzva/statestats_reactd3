@@ -75,12 +75,12 @@ class CensusApp extends Component {
     const { censusData, selectionLabels } = this.props;
 
     const width = window.screen.availWidth,
-          height = window.screen.availHeight,
-          mapW = width >= 1024 ? width*.65 : width,
-          histoW = width >= 1024 ? width*.33 : width,
-          scatterW = width >= 1024 ? width*.5 : width;
+      height = window.screen.availHeight,
+      mapW = width >= 1024 ? width * .65 : width,
+      histoW = width >= 1024 ? width * .33 : width,
+      scatterW = width >= 1024 ? width * .5 : width;
 
-    console.log(width, height)
+    //console.log(width, height)
 
 
 
@@ -101,7 +101,7 @@ class CensusApp extends Component {
     let highlightValues = [];
     if (censusData.hasOwnProperty("primaryData")) {
       highlightValues = censusData.primaryData.filter(st => selectionLabels.highlightStates.indexOf(st.id) > -1).map(st => st.value);
-      console.log(highlightValues);
+      //console.log(highlightValues);
     }
 
     const InstructionsSecondary = styled.div`
@@ -146,22 +146,19 @@ class CensusApp extends Component {
               <SmallMargins>{selectionLabels.primaryData.label} vs. <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("secondaryData", val) }} selectedItem={selectionLabels.secondaryData.itemNumber} /></SmallMargins>
             </InstructionsSecondary>
 
-          </div>
-        }
+            {censusData.hasOwnProperty("secondaryData") &&
 
-
-
-        {censusData.hasOwnProperty("secondaryData") &&
-
-          <div>
-            <ScatterPlotLine
-              primaryData={censusData.primaryData}
-              secondaryData={censusData.secondaryData}
-              primaryLabel={selectionLabels.primaryData.label}
-              secondaryLabel={selectionLabels.secondaryData.label}
-              highlightStates={selectionLabels.highlightStates}
-              uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }}
-              width={scatterW} />
+              <div>
+                <ScatterPlotLine
+                  primaryData={censusData.primaryData}
+                  secondaryData={censusData.secondaryData}
+                  primaryLabel={selectionLabels.primaryData.label}
+                  secondaryLabel={selectionLabels.secondaryData.label}
+                  highlightStates={selectionLabels.highlightStates}
+                  uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }}
+                  width={scatterW} />
+              </div>
+            }
           </div>
         }
 

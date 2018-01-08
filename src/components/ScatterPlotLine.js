@@ -99,6 +99,7 @@ export default class ScatterPlotLine extends Component {
         var circles = [];
 
         if (primaryData && secondaryData) {
+            console.log(primaryData, secondaryData);
             var xrange = d3ArrayExtent(primaryData, r => r.value),
                 yrange = d3ArrayExtent(secondaryData, r => r.value);
 
@@ -177,7 +178,7 @@ export default class ScatterPlotLine extends Component {
         }
 
 
-
+        console.log(xAxis);
         return (
             <Scatter>
                 <Title>Scatter Plot of {primaryLabel} vs. {secondaryLabel}</Title>

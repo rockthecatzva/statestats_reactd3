@@ -14,7 +14,7 @@ export default class Histogram extends Component {
   render() {
     console.log("Histogram Rendering")
     const { renderData, highlightValues, width } = this.props;
-    const height = 400,
+    const height = width,
       numBins = 10;
 
     const Histo = styled.div`
@@ -138,9 +138,9 @@ export default class Histogram extends Component {
       .domain([0, d3.max(bins, function (d) { return d.length; })])
       .range([0, height - (margin.top + margin.bottom)]);
 
-    console.log(Math.trunc(bins[0].x1)===Math.trunc(bins[0].x0))
-    console.log(Math.trunc(bins[0].x1), Math.trunc(bins[0].x0))
-    console.log(bins)
+    //console.log(Math.trunc(bins[0].x1)===Math.trunc(bins[0].x0))
+    //console.log(Math.trunc(bins[0].x1), Math.trunc(bins[0].x0))
+    //console.log(bins)
 
     const format = (Math.trunc(bins[0].x1)===Math.trunc(bins[0].x0)) ? ".1f":".0f";
 

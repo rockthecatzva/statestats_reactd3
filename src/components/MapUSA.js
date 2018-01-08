@@ -12,8 +12,8 @@ export default class MapUSA extends Component {
 
   componentDidMount() {
     console.log("Map Mounted");
-    //fetch("http://rockthecatzva.com/statestats-reactd3/us.json")
-    fetch("/us.json")
+    //fetch("/us.json")
+    fetch("http://rockthecatzva.com/statestats-reactd3/us.json")
       .then(response => {
         if (response.status !== 200) {
           console.log(`There was a problem: ${response.status}`)

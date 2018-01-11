@@ -21,7 +21,7 @@ export default class ScatterPlotLine extends Component {
         const margin = {
             bottom: 35,
             top: 15,
-            left: 40,
+            left: 45,
             right: 20
         },
             buffer = 0.1,

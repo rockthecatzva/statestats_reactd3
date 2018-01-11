@@ -76,9 +76,9 @@ class CensusApp extends Component {
 
     const width = window.screen.availWidth,
       height = window.screen.availHeight,
-      mapW = width >= 1024 ? width * .65 : width,
-      histoW = width >= 1024 ? width * .33 : width,
-      scatterW = width >= 1024 ? width * .5 : width;
+      mapW = width >= 1024 ? (width * .60) : width,
+      histoW = width >= 1024 ? (width * .30) : width,
+      scatterW = width >= 1024 ? (width * .5) : width;
 
     //console.log(width, height)
 
@@ -120,7 +120,11 @@ class CensusApp extends Component {
       margin-left: auto;
       margin-right: auto;
       margin-bottom: 1em;
-      `;
+      `,
+        CenterDiv = styled.div`
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;`;
 
     return (
       <div>
@@ -130,14 +134,14 @@ class CensusApp extends Component {
           <SmallMargins>Select a demographic from the dropdown list:</SmallMargins>
         </InstructionsSecondary>
         {censusData.hasOwnProperty("primaryData") &&
-          <div>
+          <CenterDiv>
             <InstructionsSecondary>
               <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("primaryData", val) }} selectedItem={selectionLabels.primaryData.itemNumber} />
             </InstructionsSecondary>
-            <div>
+         
               <MapUSA renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightStates={selectionLabels.highlightStates} selectedLabel={selectionLabels.primaryData.label} width={mapW} />
               <Histogram renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightValues={highlightValues} selectedLabel={selectionLabels.primaryData.label} width={histoW} />
-            </div>
+          
             <ClearFloatHack />
 
             <LineDiv />
@@ -147,8 +151,6 @@ class CensusApp extends Component {
             </InstructionsSecondary>
 
             {censusData.hasOwnProperty("secondaryData") &&
-
-              <div>
                 <ScatterPlotLine
                   primaryData={censusData.primaryData}
                   secondaryData={censusData.secondaryData}
@@ -157,9 +159,8 @@ class CensusApp extends Component {
                   highlightStates={selectionLabels.highlightStates}
                   uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }}
                   width={scatterW} />
-              </div>
             }
-          </div>
+          </CenterDiv>
         }
 
         <MessageModal message={selectionLabels.message} interactionHandler={() => { this.clearSelections() }} showButton={highlightValues.length > 0} />

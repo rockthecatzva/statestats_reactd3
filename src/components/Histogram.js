@@ -118,7 +118,7 @@ export default class Histogram extends Component {
       this.props.uxCallback(message, statesInRange);
     }
 
-    const margin = { top: 20, right: 10, bottom: 20, left: 5 },
+    const margin = { top: 60, right: 10, bottom: 20, left: 5 },
       labelMargin = 5,
       tickSize = 10,
       axisMargin = 21;
@@ -186,7 +186,7 @@ export default class Histogram extends Component {
     return (
       <Histo>
         <Title>Distribution of Values</Title>
-        <SVG>
+        <SVG transform={"translate(0,"+margin.top+")"} >
           {labels}
           {bars}
           {renderAxis}

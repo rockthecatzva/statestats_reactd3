@@ -13,16 +13,21 @@ export default class Histogram extends Component {
 
   render() {
     console.log("Histogram Rendering")
-    const { renderData, highlightValues, width } = this.props;
-    const height = width,
-      numBins = 10;
+    const { renderData, highlightValues, dimensions } = this.props;
+    const width = dimensions.width,
+          height = dimensions.height,
+          numBins = 10;
 
     const Histo = styled.div`
           font-family: CustomFont;
           width: ${width + "px"};
           height: ${height + "px"};
-          float: left;
-          margin-bottom: 3em;
+          margin-left: auto;
+          margin-right: auto;
+
+          @media (min-width: 800px) {
+            float: left;
+          }
         `;
 
     const SVG = styled.svg`
@@ -50,7 +55,7 @@ export default class Histogram extends Component {
       text-align: center;
       float: left;
     `;
-    
+
     const HorizontalLine = styled.div`
   height: 0px;
   width: 90%;
@@ -86,10 +91,10 @@ export default class Histogram extends Component {
       }).map(n => { return parseInt(n[1], 10); });
 */
 
-      const highNums = Object.keys(vals).filter(t=>{
-        if((t!=="x0")&&(t!=="x1")) return true;
+      const highNums = Object.keys(vals).filter(t => {
+        if ((t !== "x0") && (t !== "x1")) return true;
         return false;
-      }).map(k=>{
+      }).map(k => {
         return vals[k];
       })
 
@@ -142,7 +147,7 @@ export default class Histogram extends Component {
     //console.log(Math.trunc(bins[0].x1), Math.trunc(bins[0].x0))
     //console.log(bins)
 
-    const format = (Math.trunc(bins[0].x1)===Math.trunc(bins[0].x0)) ? ".1f":".0f";
+    const format = (Math.trunc(bins[0].x1) === Math.trunc(bins[0].x0)) ? ".1f" : ".0f";
 
     const xAxis = d3AxisBottom()
       .scale(xScale)
@@ -201,5 +206,5 @@ Histogram.propTypes = {
   highlightValues: PropTypes.array.isRequired,
   uxCallback: PropTypes.func.isRequired,
   selectedLabel: PropTypes.string.isRequired,
-  width: PropTypes.number.isRequired
+  dimensions: PropTypes.object.isRequired
 }

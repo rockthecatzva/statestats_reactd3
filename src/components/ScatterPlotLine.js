@@ -15,22 +15,26 @@ import { extent as d3ArrayExtent } from 'd3-array';
 
 export default class ScatterPlotLine extends Component {
     render() {
-        const { primaryData, secondaryData, primaryLabel, secondaryLabel, highlightStates, uxCallback, width } = this.props;
+        const { primaryData, secondaryData, primaryLabel, secondaryLabel, highlightStates, uxCallback, dimensions } = this.props;
 
 
         const margin = {
             bottom: 35,
             top: 15,
-            left: 40,
+            left: 45,
             right: 20
         },
             buffer = 0.1,
             tickSize = 4,
             radius = 4,
-            labelOffset = 30;
+            labelOffset = 30,
+            width = dimensions.width,
+            height = dimensions.height;
 
-        const height = 400;
-
+            /*
+        const width = 600,
+        height = 400;
+*/
         const Scatter = styled.div`
                 width: ${width + "px"};
                 height: ${height + "px"};
@@ -199,5 +203,5 @@ ScatterPlotLine.propTypes = {
     secondaryLabel: PropTypes.string.isRequired,
     highlightStates: PropTypes.array.isRequired,
     uxCallback: PropTypes.func.isRequired,
-    width: PropTypes.number.isRequired
+    dimensions: PropTypes.object.isRequired
 }

@@ -12,8 +12,9 @@ export default class MapUSA extends Component {
 
   componentDidMount() {
     console.log("Map Mounted");
-    //fetch("/us.json")
-    fetch("http://rockthecatzva.com/statestats-reactd3/us.json")
+
+    //fetch("http://rockthecatzva.com/statestats-reactd3/us.json")
+    fetch("/us.json")
       .then(response => {
         if (response.status !== 200) {
           console.log(`There was a problem: ${response.status}`)
@@ -32,14 +33,24 @@ export default class MapUSA extends Component {
 
   render() {
     console.log("Map Rendering")
-    const { renderData, highlightStates, width } = this.props;
-    const height = width*.66;
+    const { renderData, highlightStates, dimensions } = this.props;
+    const height = dimensions.height,
+      width = dimensions.width;
+
+    //console.log(dimensions)
+    //const width = 600,
+    //height = 400;
 
     const Map = styled.div`
-    font-family: CustomFont;
+      font-family: CustomFont;
       width: ${width + "px"};
       height: ${height + "px"};
-      float: left;`;
+      margin-left: auto;
+      margin-right: auto;
+
+      @media (min-width: 800px) {
+        float: left;
+      }`;
 
     const SVG = styled.svg`
       width: ${width + "px"};
@@ -91,7 +102,7 @@ export default class MapUSA extends Component {
     let renderStates = []
 
     if (this.state.statePaths.features) {
-      let projection = d3.geoAlbersUsa().scale(width).translate([width/2, height/2]),
+      let projection = d3.geoAlbersUsa().scale(width*1.2).translate([width / 2, height / 2]),
         path = d3.geoPath().projection(projection),
         max_val = d3.max(renderData, (d) => { return d['value'] }),
         min_val = d3.min(renderData, (d) => { return d['value'] }),
@@ -151,5 +162,5 @@ MapUSA.propTypes = {
   uxCallback: PropTypes.func.isRequired,
   highlightStates: PropTypes.array.isRequired,
   selectedLabel: PropTypes.string.isRequired,
-  width: PropTypes.number.isRequired
+  dimensions: PropTypes.object.isRequired
 }

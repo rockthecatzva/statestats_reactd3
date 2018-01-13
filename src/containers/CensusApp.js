@@ -126,18 +126,7 @@ class CensusApp extends Component {
       margin-left: auto;
       margin-right: auto;
       margin-bottom: 1em;
-      `,
-<<<<<<< HEAD
-        CenteringDiv = styled.div`
-        width: 1000px;
-        margin-left: auto;
-        margin-right: auto;`
-=======
-        CenterDiv = styled.div`
-        width: fit-content;
-        margin-left: auto;
-        margin-right: auto;`;
->>>>>>> b5ef1c781ae123d7f3e162c61a2a00ece3903e22
+      `;
 
     return (
       <div>
@@ -147,21 +136,14 @@ class CensusApp extends Component {
           <SmallMargins>Select a demographic from the dropdown list:</SmallMargins>
         </InstructionsSecondary>
         {censusData.hasOwnProperty("primaryData") &&
-          <CenterDiv>
+          <div>
             <InstructionsSecondary>
               <Dropdown optionSet={this.dropDownOptions} onChange={(val) => { this.handleOptionChange("primaryData", val) }} selectedItem={selectionLabels.primaryData.itemNumber} />
             </InstructionsSecondary>
-<<<<<<< HEAD
             <div className="centering-div">
               <MapUSA renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightStates={selectionLabels.highlightStates} selectedLabel={selectionLabels.primaryData.label} dimensions={{"width": mapW, "height": vizH}} />
               <Histogram renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightValues={highlightValues} selectedLabel={selectionLabels.primaryData.label} dimensions={{"width": histoW, "height": vizH}} />
             </div>
-=======
-         
-              <MapUSA renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightStates={selectionLabels.highlightStates} selectedLabel={selectionLabels.primaryData.label} width={mapW} />
-              <Histogram renderData={censusData.primaryData} uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }} highlightValues={highlightValues} selectedLabel={selectionLabels.primaryData.label} width={histoW} />
-          
->>>>>>> b5ef1c781ae123d7f3e162c61a2a00ece3903e22
             <ClearFloatHack />
 
             <LineDiv />
@@ -178,13 +160,9 @@ class CensusApp extends Component {
                   secondaryLabel={selectionLabels.secondaryData.label}
                   highlightStates={selectionLabels.highlightStates}
                   uxCallback={(msg, vals) => { this.handleInteraction(msg, vals) }}
-<<<<<<< HEAD
                   dimensions={{"width": scatterW, "height": vizH}} />
-=======
-                  width={scatterW} />
->>>>>>> b5ef1c781ae123d7f3e162c61a2a00ece3903e22
             }
-          </CenterDiv>
+          </div>
         }
 
         <MessageModal message={selectionLabels.message} interactionHandler={() => { this.clearSelections() }} showButton={highlightValues.length > 0} />

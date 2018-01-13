@@ -27,8 +27,7 @@ export default class Histogram extends Component {
 
           @media (min-width: 800px) {
             float: left;
-          }
-        `;
+          }`;
 
     const SVG = styled.svg`
       width: ${width + "px"};
@@ -37,60 +36,46 @@ export default class Histogram extends Component {
 
     const Rect = styled.rect`
       stroke: #000;
-      fill: #fff;
-    `;
+      fill: #fff;`;
 
     const RectHighlight = styled.rect`
       stroke: #000;
-      fill: #d299fd;
-    `;
+      fill: #d299fd;`;
 
     const LabelText = styled.text`
-      text-anchor: middle;
-    `;
+      text-anchor: middle;`;
 
     const Title = styled.span`
       width: 100%;
       font-size: 0.9em;
       text-align: center;
-      float: left;
-    `;
+      float: left;`;
 
     const HorizontalLine = styled.div`
-  height: 0px;
-  width: 90%;
-  margin-bottom: 4px;
-  border-bottom: solid 1px #fff;
-  color: #fff;
-  margin-left: auto;
-  margin-right: auto;`
+      height: 0px;
+      width: 90%;
+      margin-bottom: 4px;
+      border-bottom: solid 1px #fff;
+      color: #fff;
+      margin-left: auto;
+      margin-right: auto;`
 
     const ValueDiv = styled.div`
-  text-align: center;
-  font-size: 1.8em;
-  color: #fff;`;
+      text-align: center;
+      font-size: 1.8em;
+      color: #fff;`;
 
     const NumformatSpan = styled.span`
-  font-size: 0.5em;`
+      font-size: 0.5em;`
 
     const LabelDiv = styled.div`
-  text-align: center;
-  font-size: 0.7em;
-  color: #fff;
-  margin-bottom: 0.3em;`;
+      text-align: center;
+      font-size: 0.7em;
+      color: #fff;
+      margin-bottom: 0.3em;`;
 
     const clickHandler = (e, vals) => {
       e.stopPropagation();
-      //console.log(vals)
-      //JUST REMOVE x0 and x1 from the array!!!
-      /*
-      const highNums = Object.entries(vals).filter(r => {
-        console.log(typeof(r))
-        if (Number.isInteger(parseInt(r[0], 10))) return true;
-        return false;
-      }).map(n => { return parseInt(n[1], 10); });
-*/
-
       const highNums = Object.keys(vals).filter(t => {
         if ((t !== "x0") && (t !== "x1")) return true;
         return false;
@@ -191,7 +176,7 @@ export default class Histogram extends Component {
     return (
       <Histo>
         <Title>Distribution of Values</Title>
-        <SVG transform={"translate(0,"+margin.top+")"} >
+        <SVG  >
           {labels}
           {bars}
           {renderAxis}

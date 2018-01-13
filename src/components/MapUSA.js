@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import * as d3 from 'd3'
-import * as topojson from 'topojson'
+import * as topojson from 'topojson-client'
 import styled from 'styled-components'
 
 export default class MapUSA extends Component {

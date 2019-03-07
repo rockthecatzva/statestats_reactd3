@@ -1,0 +1,20 @@
+.centering-div{
+    width: 100%;
+    margin-bottom: 3em;
+}
+
+/* for big screens */
+@media (min-width: 800px) {
+    .centering-div{
+        width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+       height: 410px;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .centering-div{
+       
+    }
+  }

@@ -4,6 +4,9 @@ import * as d3 from 'd3'
 import * as topojson from 'topojson-client'
 import styled from 'styled-components'
 
+const usJson = require('../us.json');
+const _statePaths= topojson.feature(usJson, usJson.objects.states)
+
 export default class MapUSA extends Component {
   constructor(props) {
     super(props);
@@ -11,22 +14,23 @@ export default class MapUSA extends Component {
   }
 
   componentDidMount() {
-    console.log("Map Mounted");
+    // console.log("Map Mounted", s);
 
-    //fetch("http://rockthecatzva.com/statestats-reactd3/us.json")
-    fetch("/us.json")
-      .then(response => {
-        if (response.status !== 200) {
-          console.log(`There was a problem: ${response.status}`)
-          return
-        }
+    //
+    //fetch("/us.json")
+    // fetch("http://rockthecatzva.com/statestats-reactd3/us.json")
+    //   .then(response => {
+    //     if (response.status !== 200) {
+    //       console.log(`There was a problem: ${response.status}`)
+    //       return
+    //     }
 
-        response.json().then(json => {
-          this.setState({
-            statePaths: topojson.feature(json, json.objects.states)
-          })
-        })
-      })
+    //     response.json().then(json => {
+    //       this.setState({
+    //         statePaths: topojson.feature(json, json.objects.states)
+    //       })
+    //     })
+    //   })
   }
 
 
@@ -101,7 +105,7 @@ export default class MapUSA extends Component {
 
     let renderStates = []
 
-    if (this.state.statePaths.features) {
+    if (_statePaths.features) {
       let projection = d3.geoAlbersUsa().scale(width*1.2).translate([width / 2, height / 2]),
         path = d3.geoPath().projection(projection),
         max_val = d3.max(renderData, (d) => { return d['value'] }),
@@ -129,7 +133,7 @@ export default class MapUSA extends Component {
       }
 
 
-      renderStates = this.state.statePaths.features.map((d, i) => {
+      renderStates = _statePaths.features.map((d, i) => {
         let colorVal = "#fff";
         const stateInfo = renderData.filter(st => { if (st.id === d.id) return true; return false; });
 

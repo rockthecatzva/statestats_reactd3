@@ -27,5 +27,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "homepage" : "http://rockthecatzva.com/dataviz-statestats/"
+  "homepage" : "https://rockthecatzva.github.io/statestats_reactd3/"
 }
